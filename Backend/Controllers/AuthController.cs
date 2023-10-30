@@ -150,12 +150,30 @@ namespace Backend.Controllers
 
             if (await _authRepository.ForgetPassword(email))
             {
-                return Ok("You may now reset your password.");
+                if (user.PasswordResetToken is not null)
+                {
+                    string recipientName = $"{user.LastName} {user.FirstName}";
+                    string emailTemplate = new EmailTemplate().GetEmailResetPasswordTemplate(recipientName, user.PasswordResetToken);
+
+                    var sendEmailRequest = new SendEmailRequest
+                    {
+                        To = user.Email,
+                        Subject = "Reset Password request",
+                        Body = emailTemplate
+                    };
+
+                    _tokenRepository.SendEmail(sendEmailRequest);
+
+                    return Ok("You may now reset your password.");
+                }
+                else
+                {
+                    throw new Exception("Something went wrong");
+                }
             }
 
             return BadRequest("Something went wrong");
         }
-
 
         [HttpPost("reset-password")]
         [ProducesResponseType(200)]
@@ -179,7 +197,6 @@ namespace Backend.Controllers
 
             return Ok("Password successfully reset.");
         }
-
 
     }
 }

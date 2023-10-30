@@ -135,7 +135,6 @@ namespace Backend.Repositories
                 smtp.Send(email);
                 smtp.Disconnect(true);
 
-                Console.WriteLine("Email sent successfully.");
             }
             catch (Exception ex)
             {
