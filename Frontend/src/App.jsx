@@ -2,6 +2,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 import AuthRoute from "./Routes/AuthRoute";
 import UserRoute from "./Routes/UserRoute";
 import AuthVerifyService from "./Services/Auth/AuthVerifyService";
+import { AuthContextProvider } from "./Context/AuthContext";
 
 function App() {
   const authStatus = AuthVerifyService.AuthVerify();
@@ -15,9 +16,11 @@ function App() {
   }
   if (authStatus === 1) {
     return (
-      <Router>
-        <UserRoute />
-      </Router>
+      <AuthContextProvider>
+        <Router>
+          <UserRoute />
+        </Router>
+      </AuthContextProvider>
     );
   }
 

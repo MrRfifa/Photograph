@@ -109,11 +109,37 @@ const resetPassword = (token, password, confirmPassword) =>
       return { success: false, error: error.response.data };
     });
 
+const getUserInfo = (authToken) => {
+  const headers = {
+    "Content-Type": "application/json",
+    Authorization: authToken,
+  };
+
+  return axios
+    .get(`${API_URL}User/info`, {
+      headers,
+    })
+    .then((response) => {
+      if (response.data) {
+        return {
+          userInfo: response.data,
+        };
+      } else {
+        return { error: "User information not available" };
+      }
+    })
+    .catch((error) => {
+      console.error("Error fetching user information:", error);
+      return { success: false, error: error.response.data };
+    });
+};
+
 const AuthService = {
   login,
   register,
   forgetPassword,
   resetPassword,
+  getUserInfo,
 };
 
 export default AuthService;
