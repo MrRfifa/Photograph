@@ -139,7 +139,7 @@ namespace Backend.Controllers
         [HttpPost("forgot-password")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> ForgotPassword(string email)
+        public async Task<IActionResult> ForgotPassword([FromBody] string email)
         {
             var user = await _userRepository.GetUserByEmail(email);
 
@@ -164,16 +164,17 @@ namespace Backend.Controllers
 
                     _tokenRepository.SendEmail(sendEmailRequest);
 
-                    return Ok("You may now reset your password.");
+                    return Ok("A confirmation mail was sent to the provided mail");
                 }
                 else
                 {
-                    throw new Exception("Something went wrong");
+                    return BadRequest("Something went wrong");
                 }
             }
 
             return BadRequest("Something went wrong");
         }
+
 
         [HttpPost("reset-password")]
         [ProducesResponseType(200)]
