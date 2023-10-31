@@ -1,4 +1,4 @@
-import ImageCard from "./ImageCard";
+import ImageCard from "../Components/ImageCard";
 import dark_1 from "../assets/Cards/dark-1.jpg";
 import dark_2 from "../assets/Cards/dark-2.jpg";
 import dark_3 from "../assets/Cards/dark-3.jpg";

@@ -1,5 +1,5 @@
 import camera from "../assets/camera-analytics.jpg";
-import { LabelDestinationLinkButton } from "./CustomizedButtons";
+import { LabelDestinationLinkButton } from "../Components/CustomizedButtons";
 
 const Invitation = () => {
   return (

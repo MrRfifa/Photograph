@@ -13,13 +13,15 @@ const login = (email, password) =>
         const token = "bearer " + response.data.token;
         localStorage.setItem("token", token);
         return { success: true, token };
+      } else if (response == "Not verified.") {
+        return { success: false, error: "Not verified" };
       } else {
         return { success: false, error: "Email or password is incorrect" };
       }
     })
     .catch((error) => {
       console.error("Login error:", error);
-      return { success: false, error: "Login failed" };
+      return { success: false, error: error.response.data };
     });
 
 const register = (
@@ -51,12 +53,67 @@ const register = (
     })
     .catch((error) => {
       console.error("Registration error:", error);
-      return { success: false, error: "Invalid response data" };
+      return { success: false, error: error.response.data };
+    });
+
+const forgetPassword = (email) =>
+  axios
+    .post(`${API_URL}Auth/forgot-password`, `"${email}"`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response) => {
+      if (response.data) {
+        return {
+          success: true,
+          message: "An email is sent to the provided email address.",
+        };
+      } else {
+        // console.log("Password reset failed. Response:", response);
+        return { success: false, error: "Password reset is failed" };
+      }
+    })
+    .catch((error) => {
+      // console.error("Forget password error:", error);
+      return { success: false, error: error.response.data };
+    });
+
+const resetPassword = (token, password, confirmPassword) =>
+  axios
+    .post(
+      `${API_URL}Auth/reset-password`,
+      {
+        token,
+        password,
+        confirmPassword,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    )
+    .then((response) => {
+      if (response.data) {
+        return {
+          success: true,
+          message: "You have successfully resetted your password",
+        };
+      } else {
+        return { success: false, error: "Password reset is failed" };
+      }
+    })
+    .catch((error) => {
+      console.error("Login error:", error);
+      return { success: false, error: error.response.data };
     });
 
 const AuthService = {
   login,
   register,
+  forgetPassword,
+  resetPassword,
 };
 
 export default AuthService;

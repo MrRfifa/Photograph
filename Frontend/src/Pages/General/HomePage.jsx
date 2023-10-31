@@ -1,7 +1,7 @@
-import CardsSection from "../../Components/CardsSection";
+import CardsSection from "../../Layout/CardsSection";
 import Footer from "../../Layout/Footer";
-import Invitation from "../../Components/Invitation";
-import Main from "../../Components/Main";
+import Invitation from "../../Layout/Invitation";
+import Main from "../../Layout/Main";
 import Navbar from "../../Layout/Navbar";
 
 const HomePage = () => {
