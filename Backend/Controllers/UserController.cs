@@ -160,5 +160,24 @@ namespace Backend.Controllers
             }
         }
 
+        [HttpGet("info")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(401)]
+        public IActionResult GetUserInfo()
+        {
+            var user = HttpContext.User;
+
+            if (user.Identity.IsAuthenticated)
+            {
+                var claims = user.Claims.Select(c => new { Type = c.Type, Value = c.Value }).ToList();
+                return Ok(
+                     claims
+                );
+            }
+
+            return Ok("null");
+        }
     }
 }
