@@ -2,10 +2,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { FaArrowCircleLeft } from "react-icons/fa";
-import AuthService from "../Services/Auth/AuthService";
+import AuthService from "../../Services/Auth/AuthService";
 import toast, { Toaster } from "react-hot-toast";
+import { useState } from "react";
 
 const RegisterForm = () => {
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   async function onFinish(values) {
     try {
@@ -46,6 +48,8 @@ const RegisterForm = () => {
         icon: "🤌🏻",
         className: "bg-red-500 text-white",
       });
+    }finally {
+      setLoading(false);
     }
   }
 
@@ -219,7 +223,7 @@ const RegisterForm = () => {
                 className="bg-gradient-to-r from-[#E0B1CB] to-[#240046] text-white font-bold py-2 px-4 rounded-md mt-4 hover:bg-indigo-600 hover:to-[#7B2CBF] transition ease-in-out duration-150"
                 type="submit"
               >
-                Sign Up
+                 {loading ? "Signing up..." : "Sign Up"}
               </button>
             </Form>
           </Formik>

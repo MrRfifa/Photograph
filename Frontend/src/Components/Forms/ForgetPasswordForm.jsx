@@ -2,7 +2,7 @@ import { ErrorMessage, Field, Form, Formik } from "formik";
 import { FaArrowCircleLeft } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
-import AuthService from "../Services/Auth/AuthService";
+import AuthService from "../../Services/Auth/AuthService";
 import toast, { Toaster } from "react-hot-toast";
 import { useState } from "react";
 

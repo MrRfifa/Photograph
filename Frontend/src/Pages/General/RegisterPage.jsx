@@ -1,4 +1,4 @@
-import RegisterForm from "../../Components/RegisterForm";
+import RegisterForm from "../../Components/Forms/RegisterForm";
 import registerImage from "../../assets/register.jpg";
 
 const RegisterPage = () => {

@@ -1,7 +1,8 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useContext } from "react";
 import { motion } from "framer-motion";
 import icon from "../../assets/cam.png";
-import logo from "../../assets/rounded.png";
+import manLogo from "../../assets/Genders/man.png";
+import womanLogo from "../../assets/Genders/woman.png";
 import {
   AiOutlineHome,
   AiOutlineAppstore,
@@ -12,13 +13,30 @@ import {
 } from "react-icons/ai";
 import { useMediaQuery } from "react-responsive";
 import { NavLink, useLocation } from "react-router-dom";
+import AuthContext from "../../Context/AuthContext";
 
 const Sidebar = () => {
-  const isTabletMid = useMediaQuery({ query: "(max-width: 768px)" });
-  const [open, setOpen] = useState(!isTabletMid);
+  const isTabletMid = useMediaQuery({ query: "(max-width: 1250px)" });
+  const [open, setOpen] = useState(!isTabletMid); // Initialize the state based on the screen size
   const sidebarRef = useRef();
   const { pathname } = useLocation();
-
+  const infos = useContext(AuthContext);
+  var userFemale = false;
+  var userName = {
+    lastname: "",
+    firstname: "",
+  };
+  // Check if infos.userInfo exists and has at least 3 elements
+  if (infos.userInfo && infos.userInfo.length >= 3) {
+    userFemale = infos.userInfo[2].value === "female";
+    userName = {
+      lastname: infos.userInfo[4].value,
+      firstname: infos.userInfo[5].value,
+    };
+  } else {
+    //TODO: Remove this
+    console.log("User info is missing or incomplete");
+  }
   useEffect(() => {
     if (isTabletMid) {
       setOpen(false);
@@ -70,7 +88,7 @@ const Sidebar = () => {
     <div>
       <div
         onClick={() => setOpen(false)}
-        className={`md:hidden fixed inset-0 max-h-screen z-[998] bg-black/50 ${
+        className={`lg:hidden fixed inset-0 max-h-screen z-[998] bg-black/50 ${
           open ? "block" : "hidden"
         } `}
       ></div>
@@ -79,19 +97,21 @@ const Sidebar = () => {
         variants={Nav_animation}
         initial={{ x: isTabletMid ? -250 : 0 }}
         animate={open ? "open" : "closed"}
-        className="bg-gray-700 text-gray shadow-xl z-[999] max-w-[16rem] w-[16rem] overflow-hidden md:relative fixed h-screen"
+        className="bg-gray-700 text-gray shadow-xl z-[999] max-w-[16rem] w-[16rem] overflow-hidden lg:relative fixed h-screen"
       >
         <div className="flex items-center gap-2.5 font-medium border-b py-3 border-slate-300 mx-3">
           <img src={icon} width={45} alt="Photograph icon" />
           <span className="text-xl whitespace-pre text-white">Photograph</span>
         </div>
         <div className="flex items-center gap-2.5 font-medium border-b py-3 border-slate-300 mx-3">
-          <img src={logo} width={45} alt="" />
-          <span className="text-xl whitespace-pre text-white">User Name</span>
+          <img src={userFemale ? womanLogo : manLogo} width={45} alt="" />
+          <span className="text-xl whitespace-pre text-white uppercase">
+            {userName.lastname} {userName.firstname}
+          </span>
         </div>
 
         <div className="flex flex-col h-full">
-          <ul className="whitespace-pre px-2.5 text-[0.9rem] py-5 flex flex-col gap-1 font-medium overflow-x-hidden scrollbar-thin scrollbar-track-white scrollbar-thumb-slate-100 md:h-[68%] h-[70%]">
+          <ul className="whitespace-pre px-2.5 text-[0.9rem] py-5 flex flex-col gap-1 font-medium overflow-x-hidden scrollbar-thin scrollbar-track-white scrollbar-thumb-slate-100 lg:h-[68%] h-[70%]">
             <li>
               <NavLink to="/home" className="link text-white">
                 <AiOutlineHome size={25} className="min-w-max" />
@@ -143,12 +163,15 @@ const Sidebar = () => {
                 }
           }
           transition={{ duration: 0 }}
-          className="absolute w-fit h-fit md:block z-50 hidden right-2 bottom-3 cursor-pointer"
+          className="absolute w-fit h-fit lg:block z-50 hidden right-2 bottom-3 cursor-pointer"
         >
           <AiOutlineArrowLeft className="text-white" size={25} />
         </motion.div>
       </motion.div>
-      <div className="m-3 md:hidden" onClick={() => setOpen(true)}>
+      <div
+        className="m-3 block lg:hidden md:block"
+        onClick={() => setOpen(true)}
+      >
         <AiOutlineMenu size={25} />
       </div>
     </div>
