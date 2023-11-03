@@ -173,7 +173,7 @@ namespace Backend.Migrations
                         .IsRequired()
                         .HasColumnType("varbinary(max)");
 
-                    b.Property<int?>("ProfileImageId")
+                    b.Property<int>("ProfileImageId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("ResetTokenExpires")
@@ -249,7 +249,9 @@ namespace Backend.Migrations
                 {
                     b.HasOne("Backend.Models.classes.ImageFile", "ProfileImage")
                         .WithMany()
-                        .HasForeignKey("ProfileImageId");
+                        .HasForeignKey("ProfileImageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("ProfileImage");
                 });

@@ -30,7 +30,7 @@ namespace Backend.Models.classes
         [DataType(DataType.Date)]
         public DateTime DateOfBirth { get; set; }
 
-        public ImageFile? ProfileImage { get; set; }
+        public ImageFile ProfileImage { get; set; } = new ImageFile();
 
         // Verification when a user register
         public string? VerificationToken { get; set; }

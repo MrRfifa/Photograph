@@ -69,7 +69,7 @@ namespace Backend.Migrations
                     PasswordSalt = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
                     Gender = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ProfileImageId = table.Column<int>(type: "int", nullable: true),
+                    ProfileImageId = table.Column<int>(type: "int", nullable: false),
                     VerificationToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     VerifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     PasswordResetToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -86,7 +86,8 @@ namespace Backend.Migrations
                         name: "FK_Users_ImageFile_ProfileImageId",
                         column: x => x.ProfileImageId,
                         principalTable: "ImageFile",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(

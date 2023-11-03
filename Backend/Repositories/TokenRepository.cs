@@ -43,9 +43,13 @@ namespace Backend.Repositories
             List<Claim> claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, "owner"),
+                new Claim(ClaimTypes.Role, user.Role.ToString()),
                 new Claim(ClaimTypes.Gender, user.Gender.ToString()),
                 new Claim(ClaimTypes.DateOfBirth, user.DateOfBirth.ToString()),
+                new Claim(ClaimTypes.Surname, user.LastName),
+                new Claim(ClaimTypes.Name, user.FirstName),
+                new Claim(ClaimTypes.Sid, user.Id.ToString()),
+                new Claim("ProfileImage", user.ProfileImage.FileName, ClaimValueTypes.String)
             };
 
             var jwtKey = _configuration.GetSection("Jwt:Key").Value;

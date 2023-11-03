@@ -106,7 +106,7 @@ namespace Backend.Controllers
 
             if (changePasswordResult)
             {
-                return NoContent();
+                return Ok("Password changed successfully");
             }
 
             return BadRequest(changePasswordResult);
@@ -127,7 +127,7 @@ namespace Backend.Controllers
 
             if (changeNamesResult)
             {
-                return NoContent();
+                return Ok("Names changed successfully");
             }
 
             return BadRequest(changeNamesResult);
