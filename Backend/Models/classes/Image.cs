@@ -20,9 +20,13 @@ namespace Backend.Models.classes
         public DateTime UploadDate { get; set; }
 
         // Property to store the uploaded file
-        public ImageFile? ImageFile { get; set; } //
+        public ImageFile? ImageFile { get; set; }
+
+        public int UserId { get; set; }
+        public User? User { get; set; }
 
         public ICollection<UserComment>? UsersComments { get; set; } // User's comments on images
         public ICollection<UserLike>? UsersLikes { get; set; } // User's likes on images
     }
+
 }

@@ -14,6 +14,6 @@ namespace Backend.Models.classes
         public string FileName { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "File Content is required.")]
-        public byte[] FileContent { get; set; } = Array.Empty<byte>();
+        public byte[] FileContentBase64 { get; set; } = Array.Empty<byte>();
     }
 }

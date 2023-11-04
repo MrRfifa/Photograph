@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20231101160553_InitialCreate")]
+    [Migration("20231104140257_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -73,7 +73,7 @@ namespace Backend.Migrations
                     b.Property<DateTime>("UploadDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("UserId")
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -93,7 +93,7 @@ namespace Backend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<byte[]>("FileContent")
+                    b.Property<byte[]>("FileContentBase64")
                         .IsRequired()
                         .HasColumnType("varbinary(max)");
 
@@ -103,7 +103,7 @@ namespace Backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ImageFile");
+                    b.ToTable("ImagesFiles");
                 });
 
             modelBuilder.Entity("Backend.Models.classes.Like", b =>
@@ -241,11 +241,15 @@ namespace Backend.Migrations
                         .WithMany()
                         .HasForeignKey("ImageFileId");
 
-                    b.HasOne("Backend.Models.classes.User", null)
+                    b.HasOne("Backend.Models.classes.User", "User")
                         .WithMany("Images")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("ImageFile");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Backend.Models.classes.User", b =>
@@ -270,7 +274,7 @@ namespace Backend.Migrations
                     b.HasOne("Backend.Models.classes.User", "User")
                         .WithMany("UsersComments")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Image");
@@ -289,7 +293,7 @@ namespace Backend.Migrations
                     b.HasOne("Backend.Models.classes.User", "User")
                         .WithMany("UsersLikes")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Image");
