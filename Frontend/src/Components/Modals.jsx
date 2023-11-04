@@ -5,6 +5,7 @@ import ChangePasswordForm from "./Forms/ChangePasswordForm";
 import ChangeEmailForm from "./Forms/ChangeEmailForm";
 import ModalComponent from "./ModalComponent";
 import ChangeNamesForm from "./Forms/ChangeNamesForm";
+import ChangeProfileImageForm from "./Forms/ChangeProfileImageForm";
 
 export const ChangeEmailModal = ({ open, onClose }) => {
   const infos = useContext(AuthContext);
@@ -59,6 +60,26 @@ export const ChangeNamesModal = ({ open, onClose }) => {
 };
 
 ChangeNamesModal.propTypes = {
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func,
+};
+
+export const ChangeProfileImageModal = ({ open, onClose }) => {
+  const infos = useContext(AuthContext);
+  const userId = infos.userInfo[6].value;
+  // const userName = {
+  //   lastname: infos.userInfo[4].value,
+  //   firstname: infos.userInfo[5].value,
+  // };
+
+  return (
+    <ModalComponent open={open} onClose={onClose}>
+      <ChangeProfileImageForm key={userId} />
+    </ModalComponent>
+  );
+};
+
+ChangeProfileImageModal.propTypes = {
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func,
 };

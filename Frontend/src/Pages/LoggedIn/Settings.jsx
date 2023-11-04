@@ -6,13 +6,18 @@ import womanLogo from "../../assets/Genders/woman.png";
 import ProfileCard from "../../Components/ProfileCard";
 import ButtonsGroups from "../../Components/ButtonsGroups";
 import { UpdatesButton } from "../../Components/CustomizedButtons";
-import { FaSpinner } from 'react-icons/fa';
+import { FaSpinner } from "react-icons/fa";
+import { ChangeProfileImageModal } from "../../Components/Modals";
 
 const Settings = () => {
   const infos = useContext(AuthContext);
   const [userInfos, setUserInfos] = useState(null);
   const [profileImage, setProfileImage] = useState(null);
+  const [openImageChange, setOpenImageChange] = useState(false);
 
+  const handleImageChange = () => setOpenImageChange(true);
+
+  const handleCloseImageChange = () => setOpenImageChange(false);
   useEffect(() => {
     if (infos.userInfo && infos.userInfo.length >= 3) {
       const userInfo = infos.userInfo;
@@ -56,7 +61,12 @@ const Settings = () => {
             />
           </div>
           <div className="mt-[10%] mb-[5%] lg:mt-[30%]">
-            <UpdatesButton label="Update" />
+            <UpdatesButton label="Update" onClick={handleImageChange} />
+            <ChangeProfileImageModal
+              key="omageChangeModal"
+              open={openImageChange}
+              onClose={handleCloseImageChange}
+            />
           </div>
 
           {/* <button

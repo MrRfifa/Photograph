@@ -13,7 +13,7 @@ const ChangeEmailForm = ({ userId }) => {
       const response = await UserService.changeEmailAddress(
         userId,
         values.email,
-        values.password
+        values.currentPassword
       );
       if (response.success) {
         toast.success(response.message, {
@@ -52,19 +52,13 @@ const ChangeEmailForm = ({ userId }) => {
       <Formik
         initialValues={{
           email: "",
-          password: "",
+          currentPassword: "",
         }}
         validationSchema={Yup.object({
           email: Yup.string()
             .email("Invalid email address")
             .required("Email is required"),
-          password: Yup.string()
-            .min(8, "Password must be at least 8 characters")
-            .required("Password is required")
-            .matches(
-              /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-              "Password must contain at least one uppercase letter, one lowercase letter, and one number"
-            ),
+          currentPassword: Yup.string().required("Password is required"),
         })}
         onSubmit={onFinish}
       >
@@ -87,18 +81,18 @@ const ChangeEmailForm = ({ userId }) => {
               />
             </div>
             <div className="grid gap-6 w-full">
-              <label className="text-white" htmlFor="password">
+              <label className="text-white" htmlFor="currentPassword">
                 Current password
               </label>
               <Field
                 type="password"
-                id="password"
-                name="password"
+                id="currentPassword"
+                name="currentPassword"
                 className="p-3 w-full placeholder-black text-black rounded-2xl focus:border-solid focus.border-2 "
                 required
               />
               <ErrorMessage
-                name="password"
+                name="currentPassword"
                 component="div"
                 className="text-red-500"
               />
