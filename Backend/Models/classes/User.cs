@@ -30,7 +30,11 @@ namespace Backend.Models.classes
         [DataType(DataType.Date)]
         public DateTime DateOfBirth { get; set; }
 
-        public ImageFile ProfileImage { get; set; } = new ImageFile();
+        [Required(ErrorMessage = "File Name is required.")]
+        public string FileName { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "File Content is required.")]
+        public byte[] FileContentBase64 { get; set; } = Array.Empty<byte>();
 
         // Verification when a user register
         public string? VerificationToken { get; set; }

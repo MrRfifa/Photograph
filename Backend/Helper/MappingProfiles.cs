@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Backend.Dtos;
+using Backend.Dtos.requests;
 using Backend.Models.classes;
 
 namespace Backend.Helper

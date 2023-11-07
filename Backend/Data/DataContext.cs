@@ -45,7 +45,7 @@ namespace Backend.Data
                 .HasOne(ul => ul.User)
                 .WithMany(u => u.UsersLikes)
                 .HasForeignKey(ul => ul.UserId)
-                .OnDelete(DeleteBehavior.Restrict); 
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<UserLike>()
                 .HasOne(ul => ul.Image)
@@ -55,7 +55,6 @@ namespace Backend.Data
                .HasOne(i => i.User)
                .WithMany(u => u.Images)
                .HasForeignKey(i => i.UserId);
-
 
             modelBuilder
                 .Entity<ImageFile>()

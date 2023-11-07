@@ -146,6 +146,14 @@ namespace Backend.Migrations
                     b.Property<DateTime?>("EmailChangeTokenExpires")
                         .HasColumnType("datetime2");
 
+                    b.Property<byte[]>("FileContentBase64")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -173,9 +181,6 @@ namespace Backend.Migrations
                         .IsRequired()
                         .HasColumnType("varbinary(max)");
 
-                    b.Property<int>("ProfileImageId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime?>("ResetTokenExpires")
                         .HasColumnType("datetime2");
 
@@ -190,8 +195,6 @@ namespace Backend.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ProfileImageId");
 
                     b.ToTable("Users");
                 });
@@ -247,17 +250,6 @@ namespace Backend.Migrations
                     b.Navigation("ImageFile");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Backend.Models.classes.User", b =>
-                {
-                    b.HasOne("Backend.Models.classes.ImageFile", "ProfileImage")
-                        .WithMany()
-                        .HasForeignKey("ProfileImageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ProfileImage");
                 });
 
             modelBuilder.Entity("Backend.Models.classes.UserComment", b =>

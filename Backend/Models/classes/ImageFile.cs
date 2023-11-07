@@ -1,8 +1,5 @@
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Backend.Models.classes
 {
@@ -15,5 +12,6 @@ namespace Backend.Models.classes
 
         [Required(ErrorMessage = "File Content is required.")]
         public byte[] FileContentBase64 { get; set; } = Array.Empty<byte>();
+
     }
 }

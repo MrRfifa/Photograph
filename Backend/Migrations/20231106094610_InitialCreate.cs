@@ -69,7 +69,8 @@ namespace Backend.Migrations
                     PasswordSalt = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
                     Gender = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ProfileImageId = table.Column<int>(type: "int", nullable: false),
+                    FileName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FileContentBase64 = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
                     VerificationToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     VerifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     PasswordResetToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -82,12 +83,6 @@ namespace Backend.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Users_ImagesFiles_ProfileImageId",
-                        column: x => x.ProfileImageId,
-                        principalTable: "ImagesFiles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -179,11 +174,6 @@ namespace Backend.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Users_ProfileImageId",
-                table: "Users",
-                column: "ProfileImageId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_UsersComments_ImageId",
                 table: "UsersComments",
                 column: "ImageId");
@@ -213,10 +203,10 @@ namespace Backend.Migrations
                 name: "Images");
 
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "ImagesFiles");
 
             migrationBuilder.DropTable(
-                name: "ImagesFiles");
+                name: "Users");
         }
     }
 }

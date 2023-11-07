@@ -10,7 +10,6 @@ namespace Backend.Interfaces
     {
         //Get users
         Task<ICollection<User>> GetUsers();
-
         //Get users by
         Task<User> GetUserById(int userId);
         Task<User> GetUserByEmail(string email);

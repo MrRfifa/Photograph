@@ -1,4 +1,5 @@
 using AutoMapper;
+using Backend.Dtos;
 using Backend.Dtos.requests;
 using Backend.Exceptions;
 using Backend.Helper;
@@ -57,7 +58,8 @@ namespace Backend.Controllers
                 if (changeEmailResult)
                 {
                     _tokenRepository.SendEmail(sendEmailRequest);
-                    return Ok("A verification mail is sent to the new address, the token will expire in 15 minutes");
+
+                    return Ok(new { status = "success", message = "A verification mail is sent to the new address, the token will expire in 15 minutes" });
                 }
             }
             else
@@ -86,7 +88,7 @@ namespace Backend.Controllers
             user.EmailChangeTokenExpires = null;
             await _userRepository.Save();
 
-            return Ok("Email change successfully verified.");
+            return Ok(new { status = "success", message = "Email change successfully verified." });
         }
 
 
@@ -106,7 +108,7 @@ namespace Backend.Controllers
 
             if (changePasswordResult)
             {
-                return Ok("Password changed successfully");
+                return Ok(new { status = "success", message = "Password changed successfully." });
             }
 
             return BadRequest(changePasswordResult);
@@ -127,7 +129,7 @@ namespace Backend.Controllers
 
             if (changeNamesResult)
             {
-                return Ok("Names changed successfully");
+                return Ok(new { status = "success", message = "Names changed successfully." });
             }
 
             return BadRequest(changeNamesResult);
@@ -146,7 +148,7 @@ namespace Backend.Controllers
                 bool deleted = await _userRepository.DeleteAccount(userId, currentPassword);
                 if (deleted)
                 {
-                    return NoContent(); // 204 No Content
+                    return Ok(new { status = "success", message = "Account successfully deleted." });
                 }
                 return NotFound(); // 404 Not Found
             }
@@ -169,15 +171,41 @@ namespace Backend.Controllers
         {
             var user = HttpContext.User;
 
-            if (user.Identity.IsAuthenticated)
+            if (user.Identity?.IsAuthenticated == true)
             {
                 var claims = user.Claims.Select(c => new { Type = c.Type, Value = c.Value }).ToList();
-                return Ok(
-                     claims
-                );
+                return Ok(claims);
             }
 
             return Ok("null");
+        }
+
+
+        [HttpGet("info/{userId}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(401)]
+
+        public async Task<IActionResult> GetUserSpecificInfo(int userId)
+        {
+            var user = await _userRepository.GetUserById(userId);
+
+            if (user is null)
+            {
+                throw new UserNotFoundException("User not found");
+            }
+
+            var userToReturn = new GetUserDto
+            {
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                FileName = user.FileName,
+                FileContentBase64 = user.FileContentBase64
+            };
+
+            return Ok(new { status = "success", message = userToReturn });
         }
     }
 }

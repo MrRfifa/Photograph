@@ -2,7 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Backend.Data;
+using Backend.Dtos.requests;
+using Backend.Exceptions;
 using Backend.Interfaces;
 using Backend.Models.classes;
 using Microsoft.AspNetCore.Authorization;
@@ -16,12 +19,14 @@ namespace Backend.Controllers
     [Authorize]
     public class ImageController : ControllerBase
     {
-        private readonly DataContext _context;
         private readonly IUserRepository _userRepository;
+        private readonly IImageRepository _imageRepository;
+        private readonly IMapper _mapper;
 
-        public ImageController(DataContext context, IUserRepository userRepository)
+        public ImageController(DataContext context, IUserRepository userRepository, IImageRepository imageRepository, IMapper mapper)
         {
-            _context = context;
+            _mapper = mapper;
+            _imageRepository = imageRepository;
             _userRepository = userRepository;
         }
 
@@ -29,46 +34,23 @@ namespace Backend.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> UploadImage(IFormFile file, [FromQuery] int userId)
+        public async Task<IActionResult> UploadImage([FromQuery] int userId, [FromForm] UploadImageRequest uploadImageRequest)
         {
             try
             {
-                if (file == null || file.Length == 0)
+                if (uploadImageRequest.file == null || uploadImageRequest.file.Length == 0)
                 {
                     return BadRequest("Invalid file.");
                 }
-                var user = await _userRepository.GetUserById(userId);
 
-                using (var ms = new MemoryStream())
+                var imageToSave = await _imageRepository.UploadImage(uploadImageRequest.file, userId, uploadImageRequest.ImageDescription, uploadImageRequest.ImageTitle);
+
+                if (!imageToSave)
                 {
-                    await file.CopyToAsync(ms);
-
-                    // Convert the image to a base64-encoded string.
-                    byte[] bytes = ms.ToArray();
-                    string base64Image = Convert.ToBase64String(bytes);
-
-                    // Create an ImageFile instance with the base64-encoded content.
-                    var imageFile = new ImageFile
-                    {
-                        FileName = file.FileName,
-                        FileContentBase64 = bytes // Store the binary data directly
-                    };
-
-                    var imageToSave = new Image
-                    {
-                        Description = "test description",
-                        Title = "test",
-                        ImageFile = imageFile,
-                        UploadDate = DateTime.Now,
-                        User = user,
-                        UserId = userId
-                    };
-
-                    _context.Images.Add(imageToSave);
-                    await _context.SaveChangesAsync();
-
-                    return Ok("Image uploaded successfully.");
+                    throw new Exception("Image not saved successfully");
                 }
+
+                return Ok(new { status = "success", message = "Image uploaded successfully." });
             }
             catch (Exception ex)
             {
@@ -81,14 +63,12 @@ namespace Backend.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        public IActionResult GetImage(int imageId)
+        public async Task<IActionResult> GetImage(int imageId)
         {
             try
             {
                 // Retrieve the Image entity from the database based on 'imageId'.
-                var image = _context.Images
-                    .Include(i => i.ImageFile)   // Include the related ImageFile entity
-                    .FirstOrDefault(i => i.Id == imageId);
+                var image = await _imageRepository.GetImageById(imageId);
                 if (image == null)
                 {
                     return NotFound("Image not found");
@@ -113,6 +93,137 @@ namespace Backend.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing the request: " + ex.Message);
             }
         }
+
+        [HttpPost("upload-profile-image/{userId}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> UploadProfileImage(int userId, IFormFile file)
+        {
+            try
+            {
+
+                if (file == null || file.Length == 0)
+                {
+                    return BadRequest("Invalid file.");
+                }
+
+                var profileImageUploaded = await _imageRepository.UploadProfileImage(file, userId);
+                if (!profileImageUploaded)
+                {
+                    throw new Exception("Image not saved successfully");
+                }
+
+                return Ok(new { status = "success", message = "Profile image uploaded successfully." });
+
+            }
+            catch (Exception ex)
+            {
+                // Handle the exception, log it, or return an error response.
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing the request: " + ex.Message);
+            }
+        }
+
+
+        [HttpGet("get-profile-image/{userId}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetProfileImage(int userId)
+        {
+            try
+            {
+                var user = await _userRepository.GetUserById(userId);
+                // Retrieve the Image entity from the database based on 'imageId'.
+
+                if (user.FileContentBase64 == null)
+                {
+                    return NotFound("Image not found or content is missing.");
+                }
+
+                // Retrieve the binary image data directly from the FileContentBase64 property.
+                byte[] imageData = user.FileContentBase64;
+                // Set the appropriate content type based on the image file format (e.g., image/jpeg).
+                string contentType = "image/jpg"; // Modify based on your image type.
+
+                return File(imageData, contentType);
+            }
+            catch (Exception ex)
+            {
+                // Handle the exception, log it, or return an error response.
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing the request: " + ex.Message);
+            }
+        }
+
+        [HttpGet("get-images/{userId}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> GetUsersImages(int userId)
+        {
+            try
+            {
+                var images = await _imageRepository.GetImagesByUserId(userId);
+
+                if (images.Count == 0)
+                {
+                    return NotFound("Images not found");
+                }
+
+                var getImageWithDetails = images.Select(image => new GetImageWithDetails
+                {
+                    Description = image.Description,
+                    Title = image.Title,
+                    FileName = image.ImageFile?.FileName ?? string.Empty,
+                    UploadDate = image.UploadDate,
+                    FileContentBase64 = image.ImageFile?.FileContentBase64 ?? new byte[0]
+                }).ToList();
+
+                return Ok(getImageWithDetails);
+            }
+            catch (Exception ex)
+            {
+                // Handle the exception, log it, or return an error response.
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing the request: " + ex.Message);
+            }
+        }
+
+
+        [HttpGet("get-images")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> GetAllImagesWithDateSort()
+        {
+            try
+            {
+                var images = await _imageRepository.GetImagesWithDateSort();
+
+                if (images.Count == 0)
+                {
+                    return NotFound("Images not found");
+                }
+                var getImageWithDetails = images
+                                            .Select(image => new GetImageWithDetails
+                                            {
+                                                Description = image.Description,
+                                                Title = image.Title,
+                                                FileName = image.ImageFile?.FileName ?? string.Empty,
+                                                UploadDate = image.UploadDate,
+                                                FileContentBase64 = image.ImageFile?.FileContentBase64 ?? new byte[0]
+                                            })
+                                            .ToList();
+                return Ok(getImageWithDetails);
+            }
+            catch (Exception ex)
+            {
+                // Handle the exception, log it, or return an error response.
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing the request: " + ex.Message);
+            }
+        }
+
+
 
     }
 }

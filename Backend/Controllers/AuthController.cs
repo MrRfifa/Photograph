@@ -75,7 +75,7 @@ namespace Backend.Controllers
 
                     _tokenRepository.SendEmail(sendEmailRequest);
 
-                    return Ok("Successfully created");
+                    return Ok(new { status = "success", message = "Successfully Created." });
                 }
                 else
                 {
@@ -109,7 +109,7 @@ namespace Backend.Controllers
                     return BadRequest("Authentication failed.");
                 }
 
-                return Ok(new { Token = token });
+                return Ok(new { message = "success", Token = token });
             }
             catch (Exception ex)
             {
@@ -132,7 +132,7 @@ namespace Backend.Controllers
             user.VerifiedAt = DateTime.Now;
             await _authRepository.Save();
 
-            return Ok("User verified! :)");
+            return Ok(new { status = "success", message = "User verified! :)" });
         }
 
 
@@ -164,7 +164,7 @@ namespace Backend.Controllers
 
                     _tokenRepository.SendEmail(sendEmailRequest);
 
-                    return Ok("A confirmation mail was sent to the provided mail");
+                    return Ok(new { status = "success", message = "A confirmation mail was sent to the provided mail" });
                 }
                 else
                 {
@@ -196,7 +196,7 @@ namespace Backend.Controllers
 
             await _authRepository.Save();
 
-            return Ok("Password successfully reset.");
+            return Ok(new { status = "success", message = "Password successfully reset." });
         }
 
     }
