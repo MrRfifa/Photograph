@@ -8,8 +8,8 @@ import ChangeNamesForm from "./Forms/ChangeNamesForm";
 import ChangeProfileImageForm from "./Forms/ChangeProfileImageForm";
 
 export const ChangeEmailModal = ({ open, onClose }) => {
-  const infos = useContext(AuthContext);
-  const userId = infos.userInfo[6].value;
+  const { userInfo } = useContext(AuthContext);
+  const userId = userInfo[3].value;
 
   return (
     <ModalComponent open={open} onClose={onClose}>
@@ -24,8 +24,8 @@ ChangeEmailModal.propTypes = {
 };
 
 export const ChangePasswordModal = ({ open, onClose }) => {
-  const infos = useContext(AuthContext);
-  const userId = infos.userInfo[6].value;
+  const { userInfo } = useContext(AuthContext);
+  const userId = userInfo[3].value;
 
   return (
     <ModalComponent open={open} onClose={onClose}>
@@ -40,11 +40,11 @@ ChangePasswordModal.propTypes = {
 };
 
 export const ChangeNamesModal = ({ open, onClose }) => {
-  const infos = useContext(AuthContext);
-  const userId = infos.userInfo[6].value;
+  const { userInfo } = useContext(AuthContext);
+  const userId = userInfo[3].value;
   const userName = {
-    lastname: infos.userInfo[4].value,
-    firstname: infos.userInfo[5].value,
+    lastname: "userInfoSpecific.message.lastName",
+    firstname: "userInfoSpecific.message.firstName",
   };
 
   return (
@@ -65,16 +65,12 @@ ChangeNamesModal.propTypes = {
 };
 
 export const ChangeProfileImageModal = ({ open, onClose }) => {
-  const infos = useContext(AuthContext);
-  const userId = infos.userInfo[6].value;
-  // const userName = {
-  //   lastname: infos.userInfo[4].value,
-  //   firstname: infos.userInfo[5].value,
-  // };
+  const { userInfo } = useContext(AuthContext);
+  const userId = userInfo[3].value;
 
   return (
     <ModalComponent open={open} onClose={onClose}>
-      <ChangeProfileImageForm key={userId} />
+      <ChangeProfileImageForm key={userId} userId={userId} />
     </ModalComponent>
   );
 };

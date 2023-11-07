@@ -30,9 +30,9 @@ const ProfileCard = ({ firstname, lastname, email, gender, dateOfBirth }) => {
 export default ProfileCard;
 
 ProfileCard.propTypes = {
-  firstname: PropTypes.string.isRequired,
-  lastname: PropTypes.string.isRequired,
-  email: PropTypes.string.isRequired,
+  firstname: PropTypes.string,
+  lastname: PropTypes.string,
+  email: PropTypes.string,
   gender: PropTypes.string.isRequired,
   dateOfBirth: PropTypes.string.isRequired,
 };

@@ -9,6 +9,7 @@ function AuthContextProvider(props) {
   const token = localStorage.getItem("token");
 
   useEffect(() => {
+    // Moved the code for fetching userInfo inside useEffect
     AuthService.getUserInfo(token)
       .then((result) => {
         if (result) {
@@ -20,7 +21,10 @@ function AuthContextProvider(props) {
       .catch((error) => {
         console.error("Error:", error);
       });
-  }, [token]);
+  }, [token]); // Only run this effect when 'token' changes
+
+
+  
 
   return (
     <AuthContext.Provider

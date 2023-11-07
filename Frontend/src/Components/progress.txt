@@ -1,0 +1,64 @@
+// import { useContext } from "react";
+// import AuthContext from "../../Context/AuthContext";
+
+import { useState } from "react";
+import axios from "axios";
+
+const Home = () => {
+  // const infos = useContext(AuthContext);
+  // console.log(infos.userInfo);
+  const [file, setFile] = useState(null);
+  const [msg, setMsg] = useState("");
+  const [progress, setProgress] = useState({
+    started: false,
+    pc: 0,
+  });
+  function handleUpload() {
+    if (!file) {
+      setMsg("No file selected");
+      return;
+    }
+    const fd = new FormData();
+    fd.append("file", file);
+    setMsg("Uploading...");
+    setProgress((prevState) => {
+      return { ...prevState, started: true };
+    });
+    axios
+      .post("http://httpbin.org/post", fd, {
+        onUploadProgress: (progressEvent) =>
+          setProgress((prevState) => {
+            return { ...prevState, pc: progressEvent.progress * 100 };
+          }),
+      })
+      .then((res) => {
+        setMsg("Upload successfull");
+        console.log(res.data);
+      })
+      .catch((err) => {
+        setMsg("Upload failed");
+        console.log(err);
+      });
+  }
+  return (
+    <>
+      <div className="w-40 h-64 bg-black text-white">hello</div>
+      <div>
+        <input type="file" onChange={(e) => setFile(e.target.files[0])} />
+        <button onClick={handleUpload}>Upload</button>
+        {progress.started && (
+          <div>
+            <progress
+              max="100"
+              value={progress.pc}
+              className=" [&::-webkit-progress-bar]:rounded-lg [&::-webkit-progress-value]:rounded-lg   [&::-webkit-progress-bar]:bg-slate-300 [&::-webkit-progress-value]:bg-violet-400 [&::-moz-progress-bar]:bg-violet-400"
+            ></progress>
+          </div>
+        )}
+        {msg && <span>{msg}</span>}
+      </div>
+    </>
+  );
+};
+
+export default Home;

@@ -134,12 +134,38 @@ const getUserInfo = (authToken) => {
     });
 };
 
+const getUserSpecificInfo = (userId) => {
+  const headers = {
+    "Content-Type": "application/json",
+    Authorization: localStorage.getItem("token"),
+  };
+
+  return axios
+    .get(`${API_URL}User/info/${userId}`, {
+      headers,
+    })
+    .then((response) => {
+      if (response.data) {
+        return {
+          userInfoSpec: response.data,
+        };
+      } else {
+        return { error: "User information not available" };
+      }
+    })
+    .catch((error) => {
+      console.error("Error fetching user information:", error);
+      return { success: false, error: error.response.data };
+    });
+};
+
 const AuthService = {
   login,
   register,
   forgetPassword,
   resetPassword,
   getUserInfo,
+  getUserSpecificInfo,
 };
 
 export default AuthService;

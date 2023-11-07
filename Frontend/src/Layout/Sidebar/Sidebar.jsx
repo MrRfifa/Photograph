@@ -14,29 +14,39 @@ import {
 import { useMediaQuery } from "react-responsive";
 import { NavLink, useLocation } from "react-router-dom";
 import AuthContext from "../../Context/AuthContext";
+import AuthService from "../../Services/Auth/AuthService";
 
 const Sidebar = () => {
   const isTabletMid = useMediaQuery({ query: "(max-width: 1250px)" });
   const [open, setOpen] = useState(!isTabletMid); // Initialize the state based on the screen size
   const sidebarRef = useRef();
   const { pathname } = useLocation();
-  const infos = useContext(AuthContext);
+  const { userInfo } = useContext(AuthContext);
   var userFemale = false;
-  var userName = {
-    lastname: "",
+  const [userInfoSpecific, setUserInfoSpecific] = useState({
     firstname: "",
-  };
+    lastname: "",
+    profileImage: null,
+  });
   // Check if infos.userInfo exists and has at least 3 elements
-  if (infos.userInfo && infos.userInfo.length >= 3) {
-    userFemale = infos.userInfo[2].value === "female";
-    userName = {
-      lastname: infos.userInfo[4].value,
-      firstname: infos.userInfo[5].value,
-    };
-  } else {
-    //TODO: Remove this
-    console.log("User info is missing or incomplete");
-  }
+  useEffect(() => {
+    if (userInfo && userInfo[3]) {
+      AuthService.getUserSpecificInfo(userInfo[3].value)
+        .then((res) => {
+          const { message } = res.userInfoSpec || {};
+          const { firstName, lastName, fileContentBase64 } = message || {};
+
+          setUserInfoSpecific({
+            firstname: firstName || "",
+            lastname: lastName || "",
+            profileImage: fileContentBase64 || "",
+          });
+        })
+        .catch((error) => {
+          console.error("Error fetching user information:", error);
+        });
+    }
+  }, [userInfo]);
   useEffect(() => {
     if (isTabletMid) {
       setOpen(false);
@@ -104,9 +114,20 @@ const Sidebar = () => {
           <span className="text-xl whitespace-pre text-white">Photograph</span>
         </div>
         <div className="flex items-center gap-2.5 font-medium border-b py-3 border-slate-300 mx-3">
-          <img src={userFemale ? womanLogo : manLogo} width={45} alt="" />
+          <img
+            src={
+              userInfoSpecific.profileImage
+                ? `data:image/*;base64,${userInfoSpecific.profileImage}`
+                : userFemale
+                ? womanLogo
+                : manLogo
+            }
+            width={45}
+            alt=""
+            className="rounded-full"
+          />
           <span className="text-xl whitespace-pre text-white uppercase">
-            {userName.lastname} {userName.firstname}
+            {userInfoSpecific.lastname} {userInfoSpecific.firstname}
           </span>
         </div>
 

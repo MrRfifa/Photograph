@@ -2,46 +2,80 @@ import { useContext, useEffect, useState } from "react";
 import AuthContext from "../../Context/AuthContext";
 import manLogo from "../../assets/Genders/man.png";
 import womanLogo from "../../assets/Genders/woman.png";
-// import { ChangeEmailForm } from "../../Components/ChangeEmailForm";
 import ProfileCard from "../../Components/ProfileCard";
 import ButtonsGroups from "../../Components/ButtonsGroups";
 import { UpdatesButton } from "../../Components/CustomizedButtons";
 import { FaSpinner } from "react-icons/fa";
 import { ChangeProfileImageModal } from "../../Components/Modals";
+import AuthService from "../../Services/Auth/AuthService";
 
 const Settings = () => {
-  const infos = useContext(AuthContext);
-  const [userInfos, setUserInfos] = useState(null);
+  const { userInfo } = useContext(AuthContext);
+  const [userInfos, setUserInfos] = useState({});
+  const [userInfoSpecific, setUserInfoSpecific] = useState({
+    firstname: "",
+    lastname: "",
+    email: "",
+  });
   const [profileImage, setProfileImage] = useState(null);
   const [openImageChange, setOpenImageChange] = useState(false);
+  const [gender, setGender] = useState(null);
 
   const handleImageChange = () => setOpenImageChange(true);
-
   const handleCloseImageChange = () => setOpenImageChange(false);
+
   useEffect(() => {
-    if (infos.userInfo && infos.userInfo.length >= 3) {
-      const userInfo = infos.userInfo;
-      const dateOfBirthValue = userInfo[3].value;
-      const dateOnly = dateOfBirthValue.split(" ")[0];
-      const gender = userInfo[2].value;
+    if (userInfo && userInfo[3]) {
+      AuthService.getUserSpecificInfo(userInfo[3].value)
+        .then((res) => {
+          const { message } = res.userInfoSpec || {};
+          const { fileName, fileContentBase64, firstName, lastName, email } =
+            message || {};
 
-      setUserInfos({
-        lastname: userInfo[4].value,
-        firstname: userInfo[5].value,
-        email: userInfo[0].value,
-        gender: gender,
-        dateOfBirth: dateOnly,
-      });
+          setUserInfoSpecific({
+            firstname: firstName || "",
+            lastname: lastName || "",
+            email: email || "",
+          });
 
-      if (!profileImage && gender === "female") {
-        setProfileImage(womanLogo);
-      } else if (!profileImage && gender === "male") {
-        setProfileImage(manLogo);
-      }
+          if (fileContentBase64 === null) {
+            setProfileImage(null);
+          } else {
+            if (fileName) {
+              setProfileImage(`data:image/png;base64,${fileContentBase64}`);
+            } else {
+              setProfileImage(gender === "female" ? womanLogo : manLogo);
+            }
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching user information:", error);
+        });
     }
-  }, [infos.userInfo, profileImage]);
+  }, [userInfo, gender]);
 
-  if (!userInfos) {
+  useEffect(() => {
+    if (userInfo) {
+      const dateOfBirthValue = userInfo[2]?.value;
+      const dateOnly = dateOfBirthValue ? dateOfBirthValue.split(" ")[0] : null;
+      const userGender = userInfo[1]?.value;
+
+      setUserInfos((prevState) => ({
+        ...prevState,
+        gender: userGender,
+        dateOfBirth: dateOnly,
+      }));
+
+      setGender(userGender);
+    }
+  }, [userInfo]);
+
+  if (
+    !userInfos ||
+    !userInfoSpecific.firstname ||
+    !userInfoSpecific.lastname ||
+    !userInfoSpecific.email
+  ) {
     return (
       <div className="w-full h-full flex items-center justify-center">
         <FaSpinner className="text-blue-500 text-4xl animate-spin" />
@@ -50,12 +84,12 @@ const Settings = () => {
   }
 
   return (
-    <div className="w-full text-white  h-[95%]  lg:max-w-[1240px] md:max-w-[850px] max-w-[550px] md:text-xl sm:text-lg text-base">
+    <div className="w-full text-white h-[95%] lg:max-w-[1240px] md.max-w-[850px] max-w-[550px] md:text-xl sm:text-lg text-base">
       <div className="grid grid-cols-1 lg:grid-cols-3 lg:max-w-[1240px] mx-auto gap-2 h-full md:max-w-[850px] max-w-[550px] ">
-        <div className="flex flex-col items-center ">
+        <div className="flex flex-col items-center">
           <div className="w-[200px] h-[200px] mx-auto rounded-2xl mt-[10%] lg:mt-[30%] lg:w-[300px] lg:h-[300px] md:w-[250px] md:h-[250px] ">
             <img
-              className="w-[500px] mx-auto my-4"
+              className="w-[500px] mx-auto my-4 rounded-full"
               src={profileImage}
               alt="camera"
             />
@@ -63,27 +97,20 @@ const Settings = () => {
           <div className="mt-[10%] mb-[5%] lg:mt-[30%]">
             <UpdatesButton label="Update" onClick={handleImageChange} />
             <ChangeProfileImageModal
-              key="omageChangeModal"
+              key="imageChangeModal"
               open={openImageChange}
               onClose={handleCloseImageChange}
             />
           </div>
-
-          {/* <button
-            className="mt-[10%] mb-[5%] lg:mt-[30%] relative px-8 py-2 rounded-md bg-white isolation-auto z-10 border-2 border-lime-500
-            before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-right-full before:hover:right-0 before:rounded-full  before:bg-lime-500 before:-z-10  before:aspect-square before:hover:scale-150 overflow-hidden before:hover:duration-700"
-          >
-            Update
-          </button> */}
         </div>
         <div className="col-span-2 flex justify-center items-center">
           <div className="grid grid-rows-2 flex-col items-center justify-evenly pt-5">
             <div className="w-full">
               <ProfileCard
                 dateOfBirth={userInfos.dateOfBirth}
-                lastname={userInfos.lastname}
-                firstname={userInfos.firstname}
-                email={userInfos.email}
+                lastname={userInfoSpecific.lastname}
+                firstname={userInfoSpecific.firstname}
+                email={userInfoSpecific.email}
                 gender={userInfos.gender}
               />
             </div>
@@ -98,3 +125,4 @@ const Settings = () => {
 };
 
 export default Settings;
+``;
