@@ -37,6 +37,7 @@ namespace Backend.Repositories
             var images = await _context.Images
                 .Include(i => i.ImageFile)
                 .Where(i => i.UserId == userId)
+                .OrderByDescending(i => i.UploadDate)
                 .ToListAsync();
 
             return images;

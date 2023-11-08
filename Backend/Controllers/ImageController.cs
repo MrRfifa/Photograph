@@ -30,11 +30,11 @@ namespace Backend.Controllers
             _userRepository = userRepository;
         }
 
-        [HttpPost("upload")]
+        [HttpPost("upload/{userId}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> UploadImage([FromQuery] int userId, [FromForm] UploadImageRequest uploadImageRequest)
+        public async Task<IActionResult> UploadImage(int userId, [FromForm] UploadImageRequest uploadImageRequest)
         {
             try
             {
@@ -176,7 +176,7 @@ namespace Backend.Controllers
                     Description = image.Description,
                     Title = image.Title,
                     FileName = image.ImageFile?.FileName ?? string.Empty,
-                    UploadDate = image.UploadDate,
+                    UploadDate = DateOnly.FromDateTime(image.UploadDate),
                     FileContentBase64 = image.ImageFile?.FileContentBase64 ?? new byte[0]
                 }).ToList();
 
@@ -207,10 +207,11 @@ namespace Backend.Controllers
                 var getImageWithDetails = images
                                             .Select(image => new GetImageWithDetails
                                             {
+                                                Id = image.Id,
                                                 Description = image.Description,
                                                 Title = image.Title,
                                                 FileName = image.ImageFile?.FileName ?? string.Empty,
-                                                UploadDate = image.UploadDate,
+                                                UploadDate = DateOnly.FromDateTime(image.UploadDate),
                                                 FileContentBase64 = image.ImageFile?.FileContentBase64 ?? new byte[0]
                                             })
                                             .ToList();
