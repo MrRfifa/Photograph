@@ -1,12 +1,8 @@
-// import { useContext } from "react";
-// import AuthContext from "../../Context/AuthContext";
-
 import { useState } from "react";
 import axios from "axios";
+import { UpdatesButton } from "../../Components/CustomizedButtons";
 
-const Home = () => {
-  // const infos = useContext(AuthContext);
-  // console.log(infos.userInfo);
+const MyPhotos = () => {
   const [file, setFile] = useState(null);
   const [msg, setMsg] = useState("");
   const [progress, setProgress] = useState({
@@ -41,24 +37,35 @@ const Home = () => {
       });
   }
   return (
-    <>
-      <div className="w-40 h-64 bg-black text-white">hello</div>
-      <div>
-        <input type="file" onChange={(e) => setFile(e.target.files[0])} />
-        <button onClick={handleUpload}>Upload</button>
+    <div className="w-full h-full flex flex-col text-white">
+      <div className=" w-full h-1/5 p-4 flex items-center space-x-4">
+        <input
+          type="file"
+          onChange={(e) => setFile(e.target.files[0])}
+          className="file:bg-gradient-to-b file:from-blue-500 file:to-blue-600
+          file:py-3 file:px-6 file:m-2 file:border-none file:rounded-full file:text-white file:cursor-pointer   
+          bg-gradient-to-br from-gray-600 to-gray-700 text-white/80 rounded-full cursor-pointer"
+        />
+        <UpdatesButton
+          label="Upload"
+          onClick={handleUpload}
+          key="upload image"
+        />
         {progress.started && (
-          <div>
+          <div className="flex items-center space-x-2">
             <progress
               max="100"
               value={progress.pc}
-              className=" [&::-webkit-progress-bar]:rounded-lg [&::-webkit-progress-value]:rounded-lg   [&::-webkit-progress-bar]:bg-slate-300 [&::-webkit-progress-value]:bg-violet-400 [&::-moz-progress-bar]:bg-violet-400"
+              className="w-52 h-4 [&::-webkit-progress-bar]:rounded-lg [&::-webkit-progress-value]:rounded-lg   [&::-webkit-progress-bar]:bg-slate-300 [&::-webkit-progress-value]:bg-blue-600 [&::-moz-progress-bar]:bg-blue-600"
             ></progress>
+            <span className="text-blue-600">{progress.pc}%</span>
           </div>
         )}
         {msg && <span>{msg}</span>}
       </div>
-    </>
+      <div className="bg-red-500 w-full h-4/5 ">ciao</div>
+    </div>
   );
 };
 
-export default Home;
+export default MyPhotos;

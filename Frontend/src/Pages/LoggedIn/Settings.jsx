@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import AuthContext from "../../Context/AuthContext";
 import manLogo from "../../assets/Genders/man.png";
 import womanLogo from "../../assets/Genders/woman.png";
-import ProfileCard from "../../Components/ProfileCard";
+import ProfileCard from "../../Components/Cards/ProfileCard";
 import ButtonsGroups from "../../Components/ButtonsGroups";
 import { UpdatesButton } from "../../Components/CustomizedButtons";
 import { FaSpinner } from "react-icons/fa";
@@ -84,7 +84,7 @@ const Settings = () => {
   }
 
   return (
-    <div className="w-full text-white h-[95%] lg:max-w-[1240px] md.max-w-[850px] max-w-[550px] md:text-xl sm:text-lg text-base">
+    <div className="w-full text-white h-[95%] lg:max-w-[1240px] md:max-w-[850px] max-w-[550px] md:text-xl sm:text-lg text-base md:ml-[10rem]">
       <div className="grid grid-cols-1 lg:grid-cols-3 lg:max-w-[1240px] mx-auto gap-2 h-full md:max-w-[850px] max-w-[550px] ">
         <div className="flex flex-col items-center">
           <div className="w-[200px] h-[200px] mx-auto rounded-2xl mt-[10%] lg:mt-[30%] lg:w-[300px] lg:h-[300px] md:w-[250px] md:h-[250px] ">

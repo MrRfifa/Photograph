@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
-import manSvg from "../assets/Genders/male-svg.svg";
-import womanSvg from "../assets/Genders/female-svg.svg";
+import manSvg from "../../assets/Genders/male-svg.svg";
+import womanSvg from "../../assets/Genders/female-svg.svg";
 
 const ProfileCard = ({ firstname, lastname, email, gender, dateOfBirth }) => {
   const isGenderMale = gender.toLowerCase() === "male"; // Convert to lowercase for comparison

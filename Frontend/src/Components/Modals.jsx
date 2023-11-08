@@ -6,6 +6,8 @@ import ChangeEmailForm from "./Forms/ChangeEmailForm";
 import ModalComponent from "./ModalComponent";
 import ChangeNamesForm from "./Forms/ChangeNamesForm";
 import ChangeProfileImageForm from "./Forms/ChangeProfileImageForm";
+import UploadImageForm from "./Forms/UploadImageForm";
+import AuthVerifyService from "../Services/Auth/AuthVerifyService";
 
 export const ChangeEmailModal = ({ open, onClose }) => {
   const { userInfo } = useContext(AuthContext);
@@ -76,6 +78,23 @@ export const ChangeProfileImageModal = ({ open, onClose }) => {
 };
 
 ChangeProfileImageModal.propTypes = {
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func,
+};
+
+export const UploadImageModal = ({ open, onClose }) => {
+  // const { userInfo } = useContext(AuthContext);
+  // const userId = userInfo[3].value;
+  const userId = AuthVerifyService.getUserId();
+
+  return (
+    <ModalComponent open={open} onClose={onClose}>
+      <UploadImageForm key={userId} userId={userId} />
+    </ModalComponent>
+  );
+};
+
+UploadImageModal.propTypes = {
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func,
 };

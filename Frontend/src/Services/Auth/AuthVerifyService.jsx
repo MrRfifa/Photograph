@@ -19,8 +19,24 @@ const AuthVerify = () => {
   return 0;
 };
 
+const getUserId = () => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    const decodedToken = jwtDecode(token);
+    if (
+      decodedToken["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/sid"]
+    ) {
+      return decodedToken[
+        "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/sid"
+      ];
+    }
+  }
+  return null;
+};
+
 const AuthVerifyService = {
   AuthVerify,
+  getUserId,
 };
 
 export default AuthVerifyService;

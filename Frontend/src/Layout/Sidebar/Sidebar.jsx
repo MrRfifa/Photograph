@@ -107,7 +107,7 @@ const Sidebar = () => {
         variants={Nav_animation}
         initial={{ x: isTabletMid ? -250 : 0 }}
         animate={open ? "open" : "closed"}
-        className="bg-gray-700 text-gray shadow-xl z-[999] max-w-[16rem] w-[16rem] overflow-hidden lg:relative fixed h-screen"
+        className="bg-gray-700 text-gray shadow-xl z-[999] max-w-[16rem] w-[16rem] overflow-hidden fixed h-screen"
       >
         <div className="flex items-center gap-2.5 font-medium border-b py-3 border-slate-300 mx-3">
           <img src={icon} width={45} alt="Photograph icon" />
