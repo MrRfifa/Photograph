@@ -98,3 +98,25 @@ UploadImageModal.propTypes = {
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func,
 };
+
+export const ImageModal = ({ imageDetails, closeModal }) => {
+  return (
+    <div
+      className="fixed top-3 left-96 mx-auto my-auto w-[80%] h-[80%] bg-opacity-100 hidden lg:flex"
+      onClick={closeModal}
+    >
+      <div className="bg-white w-[80%] h-[100%] p-2 rounded-lg">
+        <img
+          src={`data:image/png;base64,${imageDetails.fileContentBase64}`}
+          alt={imageDetails.id}
+          className="w-[100%] h-[100%]"
+        />
+      </div>
+    </div>
+  );
+};
+
+ImageModal.propTypes = {
+  imageDetails: PropTypes.object.isRequired,
+  closeModal: PropTypes.func,
+};

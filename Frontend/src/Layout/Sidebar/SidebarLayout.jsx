@@ -5,7 +5,9 @@ function SidebarLayout({ children }) {
   return (
     <div className="flex">
       <Sidebar />
-      <main className="max-w-5xl flex-1 mx-auto py-2 px-4">{children}</main>
+      <main className="max-w-5xl flex-1 mx-auto py-2 mr-16 lg:mr-48">
+        {children}
+      </main>
     </div>
   );
 }

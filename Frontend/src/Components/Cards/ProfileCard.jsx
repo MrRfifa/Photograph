@@ -3,7 +3,7 @@ import manSvg from "../../assets/Genders/male-svg.svg";
 import womanSvg from "../../assets/Genders/female-svg.svg";
 
 const ProfileCard = ({ firstname, lastname, email, gender, dateOfBirth }) => {
-  const isGenderMale = gender.toLowerCase() === "male"; // Convert to lowercase for comparison
+  const isGenderMale = gender.toLowerCase() === "male";
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 justify-center items-center uppercase mt-4 mx-auto max-w-[600px] w-full rounded-lg hover:shadow-lg transition-transform duration-300 p-6 bg-gradient-to-br from-[#5A189A] to-[#E0AAFF] text-white">
       <div className="flex flex-col items-center md:items-start text-center md:text-left">

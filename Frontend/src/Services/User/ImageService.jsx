@@ -83,10 +83,34 @@ const GetAllImages = async () => {
   }
 };
 
+const GetImageByImageId = async (imageId) => {
+  try {
+    const response = await axios.get(`${API_URL}Image/get/${imageId}`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("token"),
+      },
+    });
+
+    if (response.data) {
+      return {
+        success: true,
+        message: response.data,
+      };
+    } else {
+      return { success: false, error: "Images request failed" };
+    }
+  } catch (error) {
+    console.error("Error getting images:", error);
+    return { success: false, error: error.message || "An error occurred" };
+  }
+};
+
 const ImageService = {
   GetImagesByUser,
   uploadImage,
   GetAllImages,
+  GetImageByImageId,
 };
 
 export default ImageService;
