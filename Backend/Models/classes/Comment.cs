@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -15,11 +16,11 @@ namespace Backend.Models.classes
 
         [DataType(DataType.Date)]
         public DateTime CommentDate { get; set; }
-
-        // Foreign key to link the comment to the user who made it
         public int UserId { get; set; }
-
-        // Foreign key to link the comment to the image it belongs to
         public int ImageId { get; set; }
+
+        [ForeignKey("UserCommentId")]
+        public int UserCommentId { get; set; }
+        public UserComment? UserComment;
     }
 }

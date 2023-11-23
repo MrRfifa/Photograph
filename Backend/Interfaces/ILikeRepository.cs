@@ -10,6 +10,7 @@ namespace Backend.Interfaces
         public Task<bool> LikeImage(int userId, int imageId);
         public Task<bool> UnlikeImage(int userId, int imageId);
         public Task<bool> LikedImage(int userId, int imageId);
+        public Task<int> NumberOfLikesPerImage(int imageId);
         public Task<bool> Save();
     }
 }

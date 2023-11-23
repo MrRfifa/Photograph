@@ -52,6 +52,12 @@ namespace Backend.Repositories
             return await Save();
         }
 
+        public async Task<int> NumberOfLikesPerImage(int imageId)
+        {
+            var numLikes = await _context.UsersLikes.CountAsync(i => i.ImageId == imageId);
+            return numLikes;
+        }
+
         public async Task<bool> Save()
         {
             var saved = await _context.SaveChangesAsync();

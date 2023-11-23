@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Backend.Dtos.requests;
 using Backend.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,100 +11,24 @@ namespace Backend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
-    public class LikeController : ControllerBase
+    public class CommentController : ControllerBase
     {
-        private readonly ILikeRepository _likeRepository;
-        public LikeController(ILikeRepository likeRepository)
+        private readonly ICommentRepository _commentRepository;
+        public CommentController(ICommentRepository commentRepository)
         {
-            _likeRepository = likeRepository;
+            _commentRepository = commentRepository;
         }
 
-        [HttpPost("like/{userId}/{imageId}")]
+        [HttpGet("comments-per-image/{imageId}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> LikeImage(int userId, int imageId)
+        [AllowAnonymous]
+        public async Task<ActionResult<int>> CommentsPerImage(int imageId)
         {
             try
             {
-                var result = await _likeRepository.LikeImage(userId, imageId);
-
-                if (result)
-                {
-                    return Ok(new { status = "success", message = "Image liked successfully." });
-                }
-
-                return BadRequest("User has already liked the image");
-
-            }
-            catch (Exception ex)
-            {
-                // Handle the exception, log it, or return an error response.
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing the request: " + ex.Message);
-            }
-        }
-
-        [HttpDelete("unlike/{userId}/{imageId}")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(404)]
-        [ProducesResponseType(500)]
-        public async Task<IActionResult> UnlikeImage(int userId, int imageId)
-        {
-            try
-            {
-
-                var result = await _likeRepository.UnlikeImage(userId, imageId);
-
-                if (result)
-                {
-                    return Ok(new { status = "success", message = "Image unliked successfully." });
-                }
-
-                return BadRequest("User hasn't liked the image");
-
-            }
-            catch (Exception ex)
-            {
-                // Handle the exception, log it, or return an error response.
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing the request: " + ex.Message);
-            }
-        }
-
-        [HttpGet("liked/{userId}/{imageId}")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(404)]
-        [ProducesResponseType(500)]
-        public async Task<IActionResult> LikedImage(int userId, int imageId)
-        {
-            try
-            {
-                var result = await _likeRepository.LikedImage(userId, imageId);
-
-                if (result)
-                {
-                    return Ok(new { status = "success", message = "Image already liked." });
-                }
-
-                return Ok(new { status = "failed", message = "Image not liked." });
-
-            }
-            catch (Exception ex)
-            {
-                // Handle the exception, log it, or return an error response.
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing the request: " + ex.Message);
-            }
-        }
-
-        [HttpGet("likes-per-image/{imageId}")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(404)]
-        [ProducesResponseType(500)]
-        public async Task<ActionResult<int>> LikesPerImage(int imageId)
-        {
-            try
-            {
-                var result = await _likeRepository.NumberOfLikesPerImage(imageId);
+                var result = await _commentRepository.NumberOfCommentsPerImage(imageId);
                 return Ok(new { status = "success", message = result });
 
             }
@@ -114,7 +39,82 @@ namespace Backend.Controllers
             }
         }
 
+        [HttpPost("comment/{userId}/{imageId}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<ActionResult<object>> CommentImage(int userId, int imageId, [FromBody] string commentText)
+        {
+            try
+            {
+                var result = await _commentRepository.CommentImage(userId, imageId, commentText);
 
+                if (result)
+                {
+                    return Ok(new { status = "success", message = "Image commented successfully." });
+                }
+
+                return BadRequest("Error has occured");
+
+            }
+            catch (Exception ex)
+            {
+                // Handle the exception, log it, or return an error response.
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing the request: " + ex.Message);
+            }
+        }
+
+        [HttpDelete("uncomment/{userId}/{imageId}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> UncommentImage([FromBody] int userCommentId, int userId, int imageId)
+        {
+            try
+            {
+
+                var result = await _commentRepository.DeleteCommentImage(userId, imageId, userCommentId);
+
+                if (result)
+                {
+                    return Ok(new { status = "success", message = "Image uncommented successfully." });
+                }
+
+                return BadRequest("User hasn't commented the image");
+
+            }
+            catch (Exception ex)
+            {
+                // Handle the exception, log it, or return an error response.
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing the request: " + ex.Message);
+            }
+        }
+
+        [HttpPut("update-comment/{userId}/{imageId}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> UpdateCommentImage([FromBody] ChangeCommentRequest changeCommentRequest, int userId, int imageId)
+        {
+            try
+            {
+
+                var result = await _commentRepository.UpdateCommentImage(userId, imageId, changeCommentRequest.UserCommentId, changeCommentRequest.NewComment);
+
+                if (result)
+                {
+                    return Ok(new { status = "success", message = "Comment updated successfully." });
+                }
+
+                return BadRequest("User hasn't commented the image");
+
+            }
+            catch (Exception ex)
+            {
+                // Handle the exception, log it, or return an error response.
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing the request: " + ex.Message);
+            }
+        }
 
     }
 }

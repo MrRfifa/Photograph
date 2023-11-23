@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20231106094610_InitialCreate")]
+    [Migration("20231123111244_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -42,6 +42,9 @@ namespace Backend.Migrations
                     b.Property<string>("Text")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserCommentId")
+                        .HasColumnType("int");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -204,18 +207,26 @@ namespace Backend.Migrations
 
             modelBuilder.Entity("Backend.Models.classes.UserComment", b =>
                 {
-                    b.Property<int>("UserId")
+                    b.Property<int>("UserCommentId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("ImageId")
-                        .HasColumnType("int");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserCommentId"));
 
                     b.Property<DateTime>("CommentDate")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("UserId", "ImageId");
+                    b.Property<int>("ImageId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserCommentId");
 
                     b.HasIndex("ImageId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("UsersComments");
                 });

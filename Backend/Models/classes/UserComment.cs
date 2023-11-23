@@ -7,6 +7,7 @@ namespace Backend.Models.classes
 {
     public class UserComment
     {
+        public int UserCommentId { get; set; }
         public int UserId { get; set; }
         public int ImageId { get; set; }
         public DateTime CommentDate { get; set; }

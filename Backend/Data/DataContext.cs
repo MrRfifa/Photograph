@@ -23,23 +23,26 @@ namespace Backend.Data
         {
             // Configure many-to-many relationships between Users and Images
             modelBuilder.Entity<UserComment>()
-    .HasKey(uc => new { uc.UserId, uc.ImageId });
-
-            modelBuilder.Entity<UserLike>()
-                .HasKey(ul => new { ul.UserId, ul.ImageId });
+                .HasKey(uc => uc.UserCommentId);
 
             modelBuilder.Entity<UserComment>()
-                .HasOne(uc => uc.User)
-                .WithMany(u => u.UsersComments)
-                .HasForeignKey(uc => uc.UserId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .Property(uc => uc.UserCommentId)
+                .ValueGeneratedOnAdd();
 
 
+            modelBuilder.Entity<UserComment>()
+                    .HasOne(uc => uc.User)
+                    .WithMany(u => u.UsersComments)
+                    .HasForeignKey(uc => uc.UserId)
+                    .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<UserComment>()
                 .HasOne(uc => uc.Image)
                 .WithMany(i => i.UsersComments)
                 .HasForeignKey(uc => uc.ImageId);
+
+            modelBuilder.Entity<UserLike>()
+                .HasKey(ul => new { ul.UserId, ul.ImageId });
 
             modelBuilder.Entity<UserLike>()
                 .HasOne(ul => ul.User)

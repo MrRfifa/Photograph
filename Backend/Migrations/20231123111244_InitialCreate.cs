@@ -20,7 +20,8 @@ namespace Backend.Migrations
                     Text = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CommentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false),
-                    ImageId = table.Column<int>(type: "int", nullable: false)
+                    ImageId = table.Column<int>(type: "int", nullable: false),
+                    UserCommentId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -117,13 +118,15 @@ namespace Backend.Migrations
                 name: "UsersComments",
                 columns: table => new
                 {
+                    UserCommentId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<int>(type: "int", nullable: false),
                     ImageId = table.Column<int>(type: "int", nullable: false),
                     CommentDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UsersComments", x => new { x.UserId, x.ImageId });
+                    table.PrimaryKey("PK_UsersComments", x => x.UserCommentId);
                     table.ForeignKey(
                         name: "FK_UsersComments_Images_ImageId",
                         column: x => x.ImageId,
@@ -177,6 +180,11 @@ namespace Backend.Migrations
                 name: "IX_UsersComments_ImageId",
                 table: "UsersComments",
                 column: "ImageId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UsersComments_UserId",
+                table: "UsersComments",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UsersLikes_ImageId",
