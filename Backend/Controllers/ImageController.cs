@@ -21,11 +21,9 @@ namespace Backend.Controllers
     {
         private readonly IUserRepository _userRepository;
         private readonly IImageRepository _imageRepository;
-        private readonly IMapper _mapper;
 
-        public ImageController(DataContext context, IUserRepository userRepository, IImageRepository imageRepository, IMapper mapper)
+        public ImageController(DataContext context, IUserRepository userRepository, IImageRepository imageRepository)
         {
-            _mapper = mapper;
             _imageRepository = imageRepository;
             _userRepository = userRepository;
         }
@@ -63,6 +61,7 @@ namespace Backend.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
+        [AllowAnonymous]
         public async Task<IActionResult> GetImage(int imageId)
         {
             try
@@ -78,14 +77,24 @@ namespace Backend.Controllers
                 {
                     return NotFound("Image not found or content is missing.");
                 }
-
+                var imageDetailsToReturn = new GetImageWithDetails
+                {
+                    Id = image.Id,
+                    Description = image.Description,
+                    Title = image.Title,
+                    FileName = image.ImageFile.FileName,
+                    FileContentBase64 = image.ImageFile.FileContentBase64,
+                    UploadDate = DateOnly.FromDateTime(image.UploadDate),
+                    Username = image.User?.FirstName + " " + image.User?.LastName
+                };
                 // Retrieve the binary image data directly from the FileContentBase64 property.
-                byte[] imageData = image.ImageFile.FileContentBase64;
+                // byte[] imageData = image.ImageFile.FileContentBase64;
 
                 // Set the appropriate content type based on the image file format (e.g., image/jpeg).
-                string contentType = "image/jpeg"; // Modify based on your image type.
+                // string contentType = "image/jpeg"; // Modify based on your image type.
 
-                return File(imageData, contentType);
+                // return File(imageData, contentType);
+                return Ok(imageDetailsToReturn);
             }
             catch (Exception ex)
             {
@@ -223,7 +232,6 @@ namespace Backend.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing the request: " + ex.Message);
             }
         }
-
 
 
     }

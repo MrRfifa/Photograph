@@ -24,6 +24,7 @@ namespace Backend.Repositories
         {
             var image = await _context.Images
                     .Include(i => i.ImageFile)
+                    .Include(i => i.User)
                     .FirstOrDefaultAsync(i => i.Id == imageId);
             if (image is null)
             {
