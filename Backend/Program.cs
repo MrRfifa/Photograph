@@ -42,6 +42,7 @@ builder.Services.AddScoped<ITokenRepository, TokenRepository>();
 builder.Services.AddScoped<IImageRepository, ImageRepository>();
 builder.Services.AddScoped<ILikeRepository, LikeRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+builder.Services.AddScoped<IStatisticRepository, StatisticRepository>();
 
 //Adding Data Context
 var DefaultConnection = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
