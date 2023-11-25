@@ -182,6 +182,7 @@ namespace Backend.Controllers
 
                 var getImageWithDetails = images.Select(image => new GetImageWithDetails
                 {
+                    Id = image.Id,
                     Description = image.Description,
                     Title = image.Title,
                     FileName = image.ImageFile?.FileName ?? string.Empty,

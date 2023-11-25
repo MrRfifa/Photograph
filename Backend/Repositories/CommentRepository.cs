@@ -72,6 +72,11 @@ namespace Backend.Repositories
             return comment;
         }
 
+        public async Task<List<Comment>> GetCommentPerImage(int imageId)
+        {
+            return await _context.Comments.Where(i => i.ImageId == imageId).OrderByDescending(i => i.CommentDate).ToListAsync();
+        }
+
         public async Task<int> NumberOfCommentsPerImage(int imageId)
         {
             var numComments = await _context.UsersComments.CountAsync(i => i.ImageId == imageId);

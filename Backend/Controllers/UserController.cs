@@ -116,7 +116,7 @@ namespace Backend.Controllers
 
         [HttpPut("{userId}/account/names")]
         [ProducesResponseType(400)]
-        [ProducesResponseType(204)]
+        [ProducesResponseType(200)]
         [ProducesResponseType(404)]
         public async Task<IActionResult> ChangeNames(int userId, [FromBody] ChangeNamesRequest changeNamesRequest)
         {
