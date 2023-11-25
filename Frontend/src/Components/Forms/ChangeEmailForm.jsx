@@ -1,20 +1,20 @@
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import * as Yup from "yup";
-import PropTypes from "prop-types";
 import { useState } from "react";
-import UserService from "../../Services/User/UserService";
 import toast from "react-hot-toast";
+import UserService from "../../Services/User/UserService";
 
-const ChangeEmailForm = ({ userId }) => {
+const ChangeEmailForm = () => {
   const [loading, setLoading] = useState(false);
+
   async function onFinish(values) {
     try {
       setLoading(true);
       const response = await UserService.changeEmailAddress(
-        userId,
         values.email,
         values.currentPassword
       );
+
       if (response.success) {
         toast.success(response.message, {
           duration: 4500,
@@ -22,33 +22,33 @@ const ChangeEmailForm = ({ userId }) => {
           icon: "🔥",
           className: "bg-green-500 text-white",
         });
-        localStorage.clear();
-        window.location.reload();
       } else {
-        toast.error("Email change is failed", {
+        toast.error("Email change failed: " + response.message, {
           duration: 2500,
           position: "top-right",
           icon: "💀",
           className: "bg-yellow-500 text-white",
         });
-        setLoading(false);
       }
     } catch (error) {
-      toast.error("An error occurred during login. Please try again later.", {
-        duration: 2000,
-        position: "top-right",
-        icon: "🤌🏻",
-        className: "bg-red-500 text-white",
-      });
+      console.error("An error occurred during email change:", error);
+      toast.error(
+        "An error occurred during email change. Please try again later.",
+        {
+          duration: 2000,
+          position: "top-right",
+          icon: "🤌🏻",
+          className: "bg-red-500 text-white",
+        }
+      );
     } finally {
       setLoading(false);
     }
   }
+
   return (
     <div>
-      <h2 className="text-2xl pl-[25%] font-bold text-white mb-4">
-        Change email
-      </h2>
+      <h2 className="text-2xl font-bold text-white mb-4">Change email</h2>
       <Formik
         initialValues={{
           email: "",
@@ -72,7 +72,7 @@ const ChangeEmailForm = ({ userId }) => {
                 type="email"
                 id="email"
                 name="email"
-                className="p-3 w-full text-black placeholder-black rounded-2xl focus:border-solid focus:border-2 "
+                className="p-3 w-full text-black placeholder-black rounded-2xl focus:border-solid focus:border-2"
               />
               <ErrorMessage
                 name="email"
@@ -88,7 +88,7 @@ const ChangeEmailForm = ({ userId }) => {
                 type="password"
                 id="currentPassword"
                 name="currentPassword"
-                className="p-3 w-full placeholder-black text-black rounded-2xl focus:border-solid focus.border-2 "
+                className="p-3 w-full placeholder-black text-black rounded-2xl focus:border-solid focus.border-2"
                 required
               />
               <ErrorMessage
@@ -110,8 +110,6 @@ const ChangeEmailForm = ({ userId }) => {
   );
 };
 
-export default ChangeEmailForm;
+ChangeEmailForm.propTypes = {};
 
-ChangeEmailForm.propTypes = {
-  userId: PropTypes.string.isRequired,
-};
+export default ChangeEmailForm;

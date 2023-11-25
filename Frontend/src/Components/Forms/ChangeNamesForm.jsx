@@ -5,17 +5,18 @@ import { useState } from "react";
 import UserService from "../../Services/User/UserService";
 import toast from "react-hot-toast";
 
-const ChangeNamesForm = ({ userId, initialLastname, initialFirstname }) => {
+const ChangeNamesForm = ({ initialLastname, initialFirstname }) => {
   const [loading, setLoading] = useState(false);
+
   async function onFinish(values) {
     try {
       setLoading(true);
       const response = await UserService.changeNames(
-        userId,
         values.password,
         values.firstname,
         values.lastname
       );
+      console.log(response);
       if (response.success) {
         toast.success(response.message, {
           duration: 4500,
@@ -23,28 +24,30 @@ const ChangeNamesForm = ({ userId, initialLastname, initialFirstname }) => {
           icon: "🔥",
           className: "bg-green-500 text-white",
         });
-        localStorage.clear();
-        window.location.reload();
+        window.location.reload("/");
       } else {
-        toast.error("Email change is failed", {
+        toast.error("Names change failed: " + response.message, {
           duration: 2500,
           position: "top-right",
           icon: "💀",
           className: "bg-yellow-500 text-white",
         });
-        setLoading(false);
       }
     } catch (error) {
-      toast.error("An error occurred during login. Please try again later.", {
-        duration: 2000,
-        position: "top-right",
-        icon: "🤌🏻",
-        className: "bg-red-500 text-white",
-      });
+      toast.error(
+        "An error occurred during name change. Please try again later.",
+        {
+          duration: 2000,
+          position: "top-right",
+          icon: "🤌🏻",
+          className: "bg-red-500 text-white",
+        }
+      );
     } finally {
       setLoading(false);
     }
   }
+
   return (
     <div>
       <h2 className="text-2xl pl-[25%] font-bold text-white mb-4">
@@ -132,7 +135,6 @@ const ChangeNamesForm = ({ userId, initialLastname, initialFirstname }) => {
 export default ChangeNamesForm;
 
 ChangeNamesForm.propTypes = {
-  userId: PropTypes.string.isRequired,
   initialLastname: PropTypes.string.isRequired,
   initialFirstname: PropTypes.string.isRequired,
 };

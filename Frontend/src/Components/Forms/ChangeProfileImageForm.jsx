@@ -1,9 +1,8 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
 import UserService from "../../Services/User/UserService";
-import PropTypes from "prop-types";
 
-const ChangeProfileImageForm = ({ userId }) => {
+const ChangeProfileImageForm = () => {
   const [loading, setLoading] = useState(false);
   const [file, setFile] = useState(null);
   const [progress, setProgress] = useState({ started: false, pc: 0 });
@@ -35,7 +34,6 @@ const ChangeProfileImageForm = ({ userId }) => {
       }));
 
       const response = await UserService.changeProfileImage(
-        userId,
         fd,
         setProgress,
         setMsg
@@ -121,7 +119,3 @@ const ChangeProfileImageForm = ({ userId }) => {
 };
 
 export default ChangeProfileImageForm;
-
-ChangeProfileImageForm.propTypes = {
-  userId: PropTypes.string.isRequired,
-};

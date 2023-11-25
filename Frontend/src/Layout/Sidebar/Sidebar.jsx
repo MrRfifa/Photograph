@@ -22,7 +22,8 @@ const Sidebar = () => {
   const sidebarRef = useRef();
   const { pathname } = useLocation();
   const { userInfo } = useContext(AuthContext);
-  var userFemale = false;
+  const [gender, setGender] = useState(null);
+  var userFemale = gender === "female";
   const [userInfoSpecific, setUserInfoSpecific] = useState({
     firstname: "",
     lastname: "",
@@ -41,6 +42,7 @@ const Sidebar = () => {
             lastname: lastName || "",
             profileImage: fileContentBase64 || "",
           });
+          setGender(userInfo[1]?.value);
         })
         .catch((error) => {
           console.error("Error fetching user information:", error);

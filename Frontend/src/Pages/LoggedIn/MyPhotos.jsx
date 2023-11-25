@@ -12,7 +12,6 @@ const MyPhotos = () => {
 
   const handleImageUploader = () => setOpenImageUploader(true);
   const handleCloseImageUploader = () => setOpenImageUploader(false);
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -29,7 +28,6 @@ const MyPhotos = () => {
 
     fetchData();
   }, [images]);
-
   if (!images) {
     return (
       <div className="w-full h-full flex items-center justify-center">
@@ -39,7 +37,7 @@ const MyPhotos = () => {
   }
 
   return (
-    <div className="w-full h-full flex flex-col text-white  md:ml-[10rem]">
+    <div className="w-full h-full flex flex-col text-white ml-[10rem] xl:ml-0">
       <div className="w-full p-4 flex mx-auto">
         <UpdatesButton label="Upload image" onClick={handleImageUploader} />
         <UploadImageModal
@@ -57,7 +55,7 @@ const MyPhotos = () => {
           <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
             {images.map((image) => (
               <UserImageCard
-                key={image.id}
+                key={image.id} // Use a unique identifier as the key
                 imageTitle={image.title}
                 imageDescription={image.description}
                 image={image.fileContentBase64}

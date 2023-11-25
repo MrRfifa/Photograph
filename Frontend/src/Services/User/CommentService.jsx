@@ -3,12 +3,12 @@ import AuthVerifyService from "../Auth/AuthVerifyService";
 
 const API_URL = import.meta.env.VITE_REACT_APP_API_URL;
 
-const LikeImage = async (imageId) => {
+const CommentImage = async (imageId, commentText) => {
   const userId = AuthVerifyService.getUserId();
   try {
     const response = await axios.post(
-      `${API_URL}Like/like/${userId}/${imageId}`,
-      {},
+      `${API_URL}Comment/comment/${userId}/${imageId}`,
+      commentText,
       {
         headers: {
           "Content-Type": "application/json",
@@ -23,46 +23,18 @@ const LikeImage = async (imageId) => {
         message: response.data,
       };
     } else {
-      return { success: false, error: "Images request failed" };
+      return { success: false, error: "Image commenting failed" };
     }
   } catch (error) {
-    console.error("Error liking image:", error);
+    console.error("Error commenting image:", error);
     return { success: false, error: error.message || "An error occurred" };
   }
 };
 
-const UnlikeImage = async (imageId) => {
-  const userId = AuthVerifyService.getUserId();
-  try {
-    const response = await axios.delete(
-      `${API_URL}Like/unlike/${userId}/${imageId}`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: localStorage.getItem("token"),
-        },
-      }
-    );
-
-    if (response.data) {
-      return {
-        success: true,
-        message: response.data,
-      };
-    } else {
-      return { success: false, error: "Images request failed" };
-    }
-  } catch (error) {
-    console.error("Error getting images:", error);
-    return { success: false, error: error.message || "An error occurred" };
-  }
-};
-
-const LikedImage = async (imageId) => {
-  const userId = AuthVerifyService.getUserId();
+const GetCommentsPerImageId = async (imageId) => {
   try {
     const response = await axios.get(
-      `${API_URL}Like/liked/${userId}/${imageId}`,
+      `${API_URL}Comment/comments-per-image/${imageId}`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -77,19 +49,18 @@ const LikedImage = async (imageId) => {
         message: response.data,
       };
     } else {
-      return { success: false, error: "Images request failed" };
+      return { success: false, error: "Image comments getting failed" };
     }
   } catch (error) {
-    console.error("Error getting images:", error);
+    console.error("Error getting image comments:", error);
     return { success: false, error: error.message || "An error occurred" };
   }
 };
 
-const GetNumberLikesPerImage = async (imageId) => {
-  // const userId = AuthVerifyService.getUserId();
+const GetNumberCommentsPerImage = async (imageId) => {
   try {
     const response = await axios.get(
-      `${API_URL}Like/likes-per-image/${imageId}`,
+      `${API_URL}Comment/number-comments/${imageId}`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -112,11 +83,10 @@ const GetNumberLikesPerImage = async (imageId) => {
   }
 };
 
-const LikeService = {
-  LikeImage,
-  UnlikeImage,
-  LikedImage,
-  GetNumberLikesPerImage,
+const CommentService = {
+  CommentImage,
+  GetCommentsPerImageId,
+  GetNumberCommentsPerImage,
 };
 
-export default LikeService;
+export default CommentService;

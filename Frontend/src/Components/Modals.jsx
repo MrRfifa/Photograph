@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import AuthContext from "../Context/AuthContext";
 import ChangePasswordForm from "./Forms/ChangePasswordForm";
 import ChangeEmailForm from "./Forms/ChangeEmailForm";
@@ -8,14 +8,12 @@ import ChangeNamesForm from "./Forms/ChangeNamesForm";
 import ChangeProfileImageForm from "./Forms/ChangeProfileImageForm";
 import UploadImageForm from "./Forms/UploadImageForm";
 import AuthVerifyService from "../Services/Auth/AuthVerifyService";
+import AuthService from "../Services/Auth/AuthService";
 
 export const ChangeEmailModal = ({ open, onClose }) => {
-  const { userInfo } = useContext(AuthContext);
-  const userId = userInfo[3].value;
-
   return (
     <ModalComponent open={open} onClose={onClose}>
-      <ChangeEmailForm userId={userId} key={userId} />
+      <ChangeEmailForm />
     </ModalComponent>
   );
 };
@@ -42,20 +40,27 @@ ChangePasswordModal.propTypes = {
 };
 
 export const ChangeNamesModal = ({ open, onClose }) => {
-  const { userInfo } = useContext(AuthContext);
-  const userId = userInfo[3].value;
-  const userName = {
-    lastname: "userInfoSpecific.message.lastName",
-    firstname: "userInfoSpecific.message.firstName",
-  };
+  const [username, setUsername] = useState({ lastname: "", firstname: "" });
+  const userId = AuthVerifyService.getUserId();
+
+  useEffect(() => {
+    AuthService.getUserSpecificInfo(userId)
+      .then((res) => {
+        setUsername({
+          lastname: res.userInfoSpec.message.lastName,
+          firstname: res.userInfoSpec.message.firstName,
+        });
+      })
+      .catch((error) => {
+        console.error("Error fetching user info:", error);
+      });
+  }, [userId]);
 
   return (
     <ModalComponent open={open} onClose={onClose}>
       <ChangeNamesForm
-        userId={userId}
-        key={userId}
-        initialFirstname={userName.firstname}
-        initialLastname={userName.lastname}
+        initialFirstname={username.firstname}
+        initialLastname={username.lastname}
       />
     </ModalComponent>
   );
@@ -67,12 +72,9 @@ ChangeNamesModal.propTypes = {
 };
 
 export const ChangeProfileImageModal = ({ open, onClose }) => {
-  const { userInfo } = useContext(AuthContext);
-  const userId = userInfo[3].value;
-
   return (
     <ModalComponent open={open} onClose={onClose}>
-      <ChangeProfileImageForm key={userId} userId={userId} />
+      <ChangeProfileImageForm />
     </ModalComponent>
   );
 };

@@ -29,7 +29,7 @@ const Home = () => {
     );
   }
   return (
-    <div className="w-full md:ml-[10rem]">
+    <div className="w-full ml-[10rem] xl:ml-0">
       <div className="w-full">
         <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
           {images.map((image, index) => (

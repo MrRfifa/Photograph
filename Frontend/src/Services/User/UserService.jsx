@@ -1,8 +1,10 @@
 import axios from "axios";
+import AuthVerifyService from "../Auth/AuthVerifyService";
 
 const API_URL = import.meta.env.VITE_REACT_APP_API_URL;
 
-const changeEmailAddress = (userId, newEmail, currentPassword) =>
+const changeEmailAddress = (newEmail, currentPassword) => {
+  const userId = AuthVerifyService.getUserId();
   axios
     .put(
       `${API_URL}User/${userId}/account/email`,
@@ -31,8 +33,10 @@ const changeEmailAddress = (userId, newEmail, currentPassword) =>
       console.error("Error changing email address:", error);
       return { success: false, error: error.response.data };
     });
+};
 
-const changePassword = (userId, currentPassword, password, confirmPassword) =>
+const changePassword = (currentPassword, password, confirmPassword) => {
+  const userId = AuthVerifyService.getUserId();
   axios
     .put(
       `${API_URL}User/${userId}/account/password`,
@@ -62,10 +66,13 @@ const changePassword = (userId, currentPassword, password, confirmPassword) =>
       console.error("Error changing password:", error);
       return { success: false, error: error.response.data };
     });
+};
 
-const changeNames = (userId, currentPassword, newFirstname, newLastname) =>
-  axios
-    .put(
+const changeNames = async (currentPassword, newFirstname, newLastname) => {
+  const userId = AuthVerifyService.getUserId();
+
+  try {
+    const response = await axios.put(
       `${API_URL}User/${userId}/account/names`,
       {
         currentPassword,
@@ -78,23 +85,25 @@ const changeNames = (userId, currentPassword, newFirstname, newLastname) =>
           Authorization: localStorage.getItem("token"),
         },
       }
-    )
-    .then((response) => {
-      if (response.data) {
-        return {
-          success: true,
-          message: response.data,
-        };
-      } else {
-        return { success: false, error: "Names change request failed" };
-      }
-    })
-    .catch((error) => {
-      console.error("Error changing names:", error);
-      return { success: false, error: error.response.data };
-    });
+    );
 
-const changeProfileImage = (userId, fd, setProgress, setMsg) => {
+    if (response.data) {
+      return {
+        success: true,
+        message: response.data.message, // Assuming the success message is under the "message" key
+      };
+    } else {
+      console.error("Unexpected response format:", response);
+      return { success: false, error: "Names change request failed" };
+    }
+  } catch (error) {
+    console.error("Error changing names:", error);
+    return { success: false, error: error.response?.data || "Unknown error" };
+  }
+};
+
+const changeProfileImage = (fd, setProgress, setMsg) => {
+  const userId = AuthVerifyService.getUserId();
   return axios
     .post(`${API_URL}Image/upload-profile-image/${userId}`, fd, {
       onUploadProgress: (progressEvent) => {
