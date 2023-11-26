@@ -20,14 +20,14 @@ const ImageDetails = () => {
 
   if (loading) {
     return (
-      <div className="w-full h-full flex items-center justify-center">
+      <div className="w-full h-full flex items-center justify-center ml-0 lg:ml-20">
         <FaSpinner className="text-blue-500 text-4xl animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="md:ml-[10rem] w-full">
+    <div className="ml-0 lg:ml-20 w-full">
       <div className="grid grid-cols-1 lg:grid-cols-2 h-full gap-5">
         <ImageContent imageId={imageId.id} />
         <ImageComment imageId={imageId.id} />

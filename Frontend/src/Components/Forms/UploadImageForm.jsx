@@ -1,6 +1,6 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { UpdatesButton } from "../CustomizedButtons";
+import { UpdatesButton } from "../Buttons/CustomizedButtons";
 import ImageService from "../../Services/User/ImageService";
 
 const UploadImageForm = () => {

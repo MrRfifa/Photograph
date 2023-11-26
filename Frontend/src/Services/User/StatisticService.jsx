@@ -3,12 +3,11 @@ import AuthVerifyService from "../Auth/AuthVerifyService";
 
 const API_URL = import.meta.env.VITE_REACT_APP_API_URL;
 
-const CommentImage = async (imageId, commentText) => {
+const GetNumberLikesReceived = async () => {
   const userId = AuthVerifyService.getUserId();
   try {
-    const response = await axios.post(
-      `${API_URL}Comment/comment/${userId}/${imageId}`,
-      commentText,
+    const response = await axios.get(
+      `${API_URL}Statistic/likes-received/${userId}`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -23,18 +22,18 @@ const CommentImage = async (imageId, commentText) => {
         message: response.data,
       };
     } else {
-      return { success: false, error: "Image commenting failed" };
+      return { success: false, error: "Images request failed" };
     }
   } catch (error) {
-    console.error("Error commenting image:", error);
+    console.error("Error getting image likes number:", error);
     return { success: false, error: error.message || "An error occurred" };
   }
 };
-
-const GetCommentsPerImageId = async (imageId) => {
+const GetNumberCommentsReceived = async () => {
+  const userId = AuthVerifyService.getUserId();
   try {
     const response = await axios.get(
-      `${API_URL}Comment/comments-per-image/${imageId}`,
+      `${API_URL}Statistic/comments-received/${userId}`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -49,18 +48,44 @@ const GetCommentsPerImageId = async (imageId) => {
         message: response.data,
       };
     } else {
-      return { success: false, error: "Image comments getting failed" };
+      return { success: false, error: "Images request failed" };
     }
   } catch (error) {
-    console.error("Error getting image comments:", error);
+    console.error("Error getting image likes number:", error);
     return { success: false, error: error.message || "An error occurred" };
   }
 };
-
-const GetNumberCommentsPerImage = async (imageId) => {
+const GetNumberLikesDone = async () => {
+  const userId = AuthVerifyService.getUserId();
   try {
     const response = await axios.get(
-      `${API_URL}Comment/number-comments/${imageId}`,
+      `${API_URL}Statistic/likes-done/${userId}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: localStorage.getItem("token"),
+        },
+      }
+    );
+
+    if (response.data) {
+      return {
+        success: true,
+        message: response.data,
+      };
+    } else {
+      return { success: false, error: "Images request failed" };
+    }
+  } catch (error) {
+    console.error("Error getting image likes number:", error);
+    return { success: false, error: error.message || "An error occurred" };
+  }
+};
+const GetNumberCommentsDone = async () => {
+  const userId = AuthVerifyService.getUserId();
+  try {
+    const response = await axios.get(
+      `${API_URL}Statistic/comments-done/${userId}`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -83,38 +108,11 @@ const GetNumberCommentsPerImage = async (imageId) => {
   }
 };
 
-const DeleteCommentImage = async (imageId, commentId) => {
-  const userId = AuthVerifyService.getUserId();
-  try {
-    const response = await axios.delete(
-      `${API_URL}Comment/uncomment/${userId}/${imageId}/${commentId}`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: localStorage.getItem("token"),
-        },
-      }
-    );
-
-    if (response.data) {
-      return {
-        success: true,
-        message: response.data,
-      };
-    } else {
-      return { success: false, error: "Comment deletion failed" };
-    }
-  } catch (error) {
-    console.error("Error deleting comment:", error);
-    return { success: false, error: error.message || "An error occurred" };
-  }
+const StaticticService = {
+  GetNumberLikesReceived,
+  GetNumberCommentsReceived,
+  GetNumberLikesDone,
+  GetNumberCommentsDone,
 };
 
-const CommentService = {
-  CommentImage,
-  GetCommentsPerImageId,
-  GetNumberCommentsPerImage,
-  DeleteCommentImage,
-};
-
-export default CommentService;
+export default StaticticService;

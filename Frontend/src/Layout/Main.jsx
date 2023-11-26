@@ -1,5 +1,5 @@
 import { TypeAnimation } from "react-type-animation";
-import { LabelDestinationLinkButton } from "../Components/CustomizedButtons";
+import { LabelDestinationLinkButton } from "../Components/Buttons/CustomizedButtons";
 
 const Main = () => {
   return (

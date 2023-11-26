@@ -4,7 +4,7 @@ import {
   ChangeEmailModal,
   ChangeNamesModal,
   ChangePasswordModal,
-} from "./Modals";
+} from "../Modals";
 
 const ButtonsGroups = () => {
   const [openEmailChange, setOpenEmailChange] = useState(false);

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { AiOutlineClose, AiOutlineMenu } from "react-icons/ai";
 import camLogo from "../assets/cam.png";
 import { Link } from "react-router-dom";
-import { LabelDestinationLinkButton } from "../Components/CustomizedButtons";
+import { LabelDestinationLinkButton } from "../Components/Buttons/CustomizedButtons";
 
 function Navbar() {
   const [nav, setNav] = useState(true);

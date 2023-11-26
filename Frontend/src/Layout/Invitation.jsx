@@ -1,5 +1,5 @@
 import camera from "../assets/camera-analytics.jpg";
-import { LabelDestinationLinkButton } from "../Components/CustomizedButtons";
+import { LabelDestinationLinkButton } from "../Components/Buttons/CustomizedButtons";
 
 const Invitation = () => {
   return (
@@ -11,14 +11,15 @@ const Invitation = () => {
             JOIN US
           </h1>
           <p>
-            AND BECOME THE PHOTOGRAPHER OF THE YEAR.
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dolorem iste quidem sed quisquam nostrum laudantium similique perspiciatis facilis ipsam dolorum!
+            AND BECOME THE PHOTOGRAPHER OF THE YEAR. Lorem, ipsum dolor sit amet
+            consectetur adipisicing elit. Dolorem iste quidem sed quisquam
+            nostrum laudantium similique perspiciatis facilis ipsam dolorum!
           </p>
           <LabelDestinationLinkButton
-          nav={false}
-          label="Get Started"
-          destination="/register"
-        />
+            nav={false}
+            label="Get Started"
+            destination="/register"
+          />
         </div>
       </div>
     </div>

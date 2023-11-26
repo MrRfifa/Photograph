@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import CommentService from "../../Services/User/CommentService";
 import AuthService from "../../Services/Auth/AuthService";
 import profile_Image from "../../assets/profile-image.png";
+import { RiDeleteBin6Line } from "react-icons/ri";
+import AuthVerifyService from "../../Services/Auth/AuthVerifyService";
 
 const ImageComment = ({ imageId }) => {
   const [numberComments, setNumberComments] = useState(0);
@@ -11,8 +13,20 @@ const ImageComment = ({ imageId }) => {
   const [commentText, setCommentText] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [commentsPerPage] = useState(5);
+  const [currentUserId, setCurrentUserId] = useState(0);
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const userId = AuthVerifyService.getUserId();
+        setCurrentUserId(parseInt(userId));
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
 
-  // Move fetchComments outside of useEffect
+    fetchUserData();
+  }, []);
+
   const fetchComments = async () => {
     try {
       const result = await CommentService.GetCommentsPerImageId(imageId);
@@ -82,6 +96,25 @@ const ImageComment = ({ imageId }) => {
     }
   };
 
+  const handleDeleteComment = async (commentId) => {
+    try {
+      const result = await CommentService.DeleteCommentImage(
+        imageId,
+        commentId
+      );
+
+      if (result.success) {
+        // Fetch comments again to include the deleted comment
+        await fetchComments();
+        setNumberComments((prevComments) => prevComments - 1);
+      } else {
+        console.error("Error deleting comment:", result.error);
+      }
+    } catch (error) {
+      console.error("Error deleting comment:", error);
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -146,14 +179,24 @@ const ImageComment = ({ imageId }) => {
           {currentComments.map((comment, index) => (
             <div key={index} className="comment-item mb-5">
               <div className="flex flex-row rounded-lg border-2 border-solid items-center text-white">
-                <div className="p-2 mr-2 rounded-full flex flex-col justify-between items-center">
+                <div className=" w-[30%] p-2 mr-2 flex flex-col items-center">
                   <img
                     src={comment.profileImage}
                     className="rounded-full w-12"
                   />
                   <p>{comment.userName}</p>
                 </div>
-                <p>{comment.text}</p>
+                <div className="w-[60%] flex flex-row justify-between right-0">
+                  <p>{comment.text}</p>
+                  {comment.userId === currentUserId && (
+                    <button
+                      className=""
+                      onClick={() => handleDeleteComment(comment.id)}
+                    >
+                      <RiDeleteBin6Line color="red" size={25} className="hover:scale-125" />
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           ))}
