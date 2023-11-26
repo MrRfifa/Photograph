@@ -85,11 +85,11 @@ namespace Backend.Controllers
             }
         }
 
-        [HttpDelete("uncomment/{userId}/{imageId}")]
+        [HttpDelete("uncomment/{userId}/{imageId}/{userCommentId}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> UncommentImage([FromBody] int userCommentId, int userId, int imageId)
+        public async Task<IActionResult> UncommentImage(int userCommentId, int userId, int imageId)
         {
             try
             {
