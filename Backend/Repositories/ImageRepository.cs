@@ -20,6 +20,43 @@ namespace Backend.Repositories
             _context = context;
             _userRepository = userRepository;
         }
+
+        public async Task<bool> DeleteImage(int imageId)
+        {
+            var imageToDelete = await _context.Images.Include(i => i.ImageFile).FirstOrDefaultAsync(i => i.Id == imageId);
+
+            if (imageToDelete == null)
+            {
+                throw new Exception("image to delete not found");
+            }
+
+
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
+            try
+            {
+                var likesToDelete = await _context.Likes.Where(l => l.ImageId == imageId).ToListAsync();
+                var commentsToDelete = await _context.Comments.Where(l => l.ImageId == imageId).ToListAsync();
+                var userLikesToDelete = await _context.UsersLikes.Where(l => l.ImageId == imageId).ToListAsync();
+                var userCommentsToDelete = await _context.UsersComments.Where(l => l.ImageId == imageId).ToListAsync();
+
+                _context.RemoveRange(likesToDelete);
+                _context.RemoveRange(commentsToDelete);
+                _context.RemoveRange(userLikesToDelete);
+                _context.RemoveRange(userCommentsToDelete);
+                _context.Remove(imageToDelete);
+                _context.Remove(imageToDelete.ImageFile);
+
+                await transaction.CommitAsync();
+                return await Save();
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync();
+                throw new Exception("error: ");
+            }
+        }
+
         public async Task<Image> GetImageById(int imageId)
         {
             var image = await _context.Images

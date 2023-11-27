@@ -1,16 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
 using Backend.Data;
 using Backend.Dtos.requests;
-using Backend.Exceptions;
 using Backend.Interfaces;
-using Backend.Models.classes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Controllers
 {
@@ -61,7 +53,6 @@ namespace Backend.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        [AllowAnonymous]
         public async Task<IActionResult> GetImage(int imageId)
         {
             try
@@ -226,6 +217,30 @@ namespace Backend.Controllers
                                             })
                                             .ToList();
                 return Ok(getImageWithDetails);
+            }
+            catch (Exception ex)
+            {
+                // Handle the exception, log it, or return an error response.
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing the request: " + ex.Message);
+            }
+        }
+
+        [HttpDelete("delete/{imageId}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        [AllowAnonymous]
+        public async Task<IActionResult> DeleteImage(int imageId)
+        {
+            try
+            {
+                var image = await _imageRepository.DeleteImage(imageId);
+                if (!image)
+                {
+                    return NotFound($"Image with ID {imageId} not found or not deleted.");
+                }
+
+                return Ok(new { status = "success", message = "Image deleted successfully." });
             }
             catch (Exception ex)
             {

@@ -20,7 +20,7 @@ namespace Backend.Models.classes
         public DateTime UploadDate { get; set; }
 
         // Property to store the uploaded file
-        public ImageFile? ImageFile { get; set; }
+        public ImageFile ImageFile { get; set; } = new ImageFile();
 
         public int UserId { get; set; }
         public User? User { get; set; }

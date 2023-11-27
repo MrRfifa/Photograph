@@ -5,6 +5,7 @@ namespace Backend.Models.classes
 {
     public class ImageFile
     {
+        [Key]
         public int Id { get; set; }
 
         [Required(ErrorMessage = "File Name is required.")]

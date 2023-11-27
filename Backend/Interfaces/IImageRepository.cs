@@ -15,5 +15,6 @@ namespace Backend.Interfaces
         public Task<bool> UploadProfileImage(IFormFile file, int userId);
         public Task<List<Image>> GetImagesWithDateSort();
         // public Task<ImageFile> GetImageFileByUserId(int userId);
+        public Task<bool> DeleteImage(int imageId);
     }
 }
