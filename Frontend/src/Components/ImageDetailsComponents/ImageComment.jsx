@@ -2,9 +2,10 @@ import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import CommentService from "../../Services/User/CommentService";
 import AuthService from "../../Services/Auth/AuthService";
+import AuthVerifyService from "../../Services/Auth/AuthVerifyService";
 import profile_Image from "../../assets/profile-image.png";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import AuthVerifyService from "../../Services/Auth/AuthVerifyService";
+import { ImSpinner9 } from "react-icons/im";
 
 const ImageComment = ({ imageId }) => {
   const [numberComments, setNumberComments] = useState(0);
@@ -14,6 +15,8 @@ const ImageComment = ({ imageId }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [commentsPerPage] = useState(5);
   const [currentUserId, setCurrentUserId] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [commentBeingDeletedId, setCommentBeingDeletedId] = useState(null);
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -98,6 +101,8 @@ const ImageComment = ({ imageId }) => {
 
   const handleDeleteComment = async (commentId) => {
     try {
+      setCommentBeingDeletedId(commentId);
+      setIsDeleting(true);
       const result = await CommentService.DeleteCommentImage(
         imageId,
         commentId
@@ -112,6 +117,9 @@ const ImageComment = ({ imageId }) => {
       }
     } catch (error) {
       console.error("Error deleting comment:", error);
+    } finally {
+      setIsDeleting(false);
+      setCommentBeingDeletedId(null);
     }
   };
 
@@ -179,7 +187,7 @@ const ImageComment = ({ imageId }) => {
           {currentComments.map((comment, index) => (
             <div key={index} className="comment-item mb-5">
               <div className="flex flex-row rounded-lg border-2 border-solid items-center text-white">
-                <div className=" w-[30%] p-2 mr-2 flex flex-col items-center">
+                <div className="w-[30%] p-2 mr-2 flex flex-col items-center">
                   <img
                     src={comment.profileImage}
                     className="rounded-full w-12"
@@ -189,12 +197,26 @@ const ImageComment = ({ imageId }) => {
                 <div className="w-[60%] flex flex-row justify-between right-0">
                   <p>{comment.text}</p>
                   {comment.userId === currentUserId && (
-                    <button
-                      className=""
-                      onClick={() => handleDeleteComment(comment.id)}
-                    >
-                      <RiDeleteBin6Line color="red" size={25} className="hover:scale-125" />
-                    </button>
+                    <div className="flex items-center">
+                      <button
+                        className="mx-2"
+                        onClick={() => handleDeleteComment(comment.id)}
+                        disabled={isDeleting}
+                      >
+                        {isDeleting && comment.id === commentBeingDeletedId ? (
+                          <ImSpinner9
+                            className="text-blue-500 animate-spin"
+                            size={25}
+                          />
+                        ) : (
+                          <RiDeleteBin6Line
+                            color="red"
+                            size={25}
+                            className="hover:scale-125"
+                          />
+                        )}
+                      </button>
+                    </div>
                   )}
                 </div>
               </div>

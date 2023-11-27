@@ -40,6 +40,7 @@ const Home = () => {
               image={image.fileContentBase64}
               uploadDate={image.uploadDate}
               imageId={image.id}
+              privatePage={false}
             />
           ))}
         </div>

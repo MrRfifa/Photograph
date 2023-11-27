@@ -112,6 +112,7 @@ const MyPhotos = () => {
                 image={image.fileContentBase64}
                 uploadDate={image.uploadDate}
                 imageId={image.id}
+                privatePage={true}
               />
             ))}
           </div>

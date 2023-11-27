@@ -106,11 +106,35 @@ const GetImageByImageId = async (imageId) => {
   }
 };
 
+const DeleteImage = async (imageId) => {
+  try {
+    const response = await axios.delete(`${API_URL}Image/delete/${imageId}`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("token"),
+      }, 
+    });
+
+    if (response.data) {
+      return {
+        success: true,
+        message: response.data,
+      };
+    } else {
+      return { success: false, error: "Images request failed" };
+    }
+  } catch (error) {
+    console.error("Error getting images:", error);
+    return { success: false, error: error.message || "An error occurred" };
+  }
+};
+
 const ImageService = {
   GetImagesByUser,
   uploadImage,
   GetAllImages,
   GetImageByImageId,
+  DeleteImage,
 };
 
 export default ImageService;

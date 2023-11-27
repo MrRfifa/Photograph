@@ -110,11 +110,44 @@ const DeleteCommentImage = async (imageId, commentId) => {
   }
 };
 
+const UpdateComment = (imageId, commentId, newCommentText) => {
+  const userId = AuthVerifyService.getUserId();
+  axios
+    .put(
+      `${API_URL}Comment/update-comment/${userId}/${imageId}/`,
+      {
+        commentId,
+        newCommentText,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: localStorage.getItem("token"),
+        },
+      }
+    )
+    .then((response) => {
+      if (response.data) {
+        return {
+          success: true,
+          message: response.data,
+        };
+      } else {
+        return { success: false, error: "Comment change request failed" };
+      }
+    })
+    .catch((error) => {
+      console.error("Error changing comment:", error);
+      return { success: false, error: error.response.data };
+    });
+};
+
 const CommentService = {
   CommentImage,
   GetCommentsPerImageId,
   GetNumberCommentsPerImage,
   DeleteCommentImage,
+  UpdateComment,
 };
 
 export default CommentService;
