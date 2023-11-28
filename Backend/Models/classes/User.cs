@@ -45,9 +45,13 @@ namespace Backend.Models.classes
         public DateTime? ResetTokenExpires { get; set; }
         public string NewEmail { get; set; } = string.Empty;
 
-        // Verification when chane email address request
+        // Verification when change email address request
         public string? EmailChangeToken { get; set; }
         public DateTime? EmailChangeTokenExpires { get; set; }
+
+        // Verification when deleting account
+        public string? DeleteAccountToken { get; set; }
+        public DateTime? DeleteAccountTokenExpires { get; set; }
 
         // Navigation properties for relationships
         public ICollection<UserComment> UsersComments { get; set; } = new List<UserComment>(); // User's comments on images

@@ -31,7 +31,7 @@ namespace Backend.Repositories
             {
                 throw new UserNotFoundException($"User with ID {userId} not found");
             }
-            
+
             // Verify the user's password
             if (!_tokenRepository.VerifyPasswordHash(currentPassword, user.PasswordHash, user.PasswordSalt))
             {
@@ -118,9 +118,42 @@ namespace Backend.Repositories
             {
                 throw new Exception("Incorrect password. Account deletion denied.");
             }
-            _context.Remove(user);
+            user.DeleteAccountToken = await _tokenRepository.GenerateUniqueToken();
+            user.DeleteAccountTokenExpires = DateTime.Now.AddMinutes(15);
             return await Save();
         }
+
+        public async Task<bool> DeleteAccountVerification(string token)
+        {
+            var user = GetUserByDeleteAccountToken(token);
+
+            if (user == null)
+            {
+                throw new UserNotFoundException();
+            }
+
+            if (user.DeleteAccountTokenExpires < DateTime.Now)
+            {
+                throw new Exception("Token has expired");
+            }
+
+            using (var transaction = _context.Database.BeginTransaction())
+            {
+                try
+                {
+                    await DeletionOfAllAssets(user.Id);
+                    _context.Remove(user);
+                    transaction.Commit();
+                    return await Save();
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    throw new Exception(ex.Message);
+                }
+            }
+        }
+
 
         public async Task<User> GetUserByEmail(string email)
         {
@@ -141,6 +174,22 @@ namespace Backend.Repositories
             var user = await _context.Users
                 .Where(u => u.EmailChangeToken == token)
                 .FirstOrDefaultAsync();
+
+            if (user is null)
+            {
+                throw new UserNotFoundException("User not found");
+            }
+
+            return user;
+        }
+
+        public User GetUserByDeleteAccountToken(string token)
+        {
+            var users = _context.Users
+                .Where(u => u.DeleteAccountToken == token)
+                .ToList();
+
+            var user = users.FirstOrDefault();
 
             if (user is null)
             {
@@ -190,6 +239,39 @@ namespace Backend.Repositories
                 throw new UserNotFoundException($"User with ID {userId} not found");
             }
             return true;
+        }
+
+        public async Task<bool> DeletionOfAllAssets(int userId)
+        {
+            var likesToDelete = await _context.Likes
+                                                .Where(ld => ld.UserId == userId)
+                                                .ToListAsync();
+            var commentsToDelete = await _context.Comments
+                                                .Where(ld => ld.UserId == userId)
+                                                .ToListAsync();
+            var userCommentsToDelete = await _context.UsersComments
+                                                .Where(ld => ld.UserId == userId)
+                                                .ToListAsync();
+            var userLikesToDelete = await _context.UsersLikes
+                                                .Where(ld => ld.UserId == userId)
+                                                .ToListAsync();
+            var imagesToDelete = await _context.Images
+                                                .Include(ld => ld.ImageFile)
+                                                .Where(ld => ld.UserId == userId)
+                                                .ToListAsync();
+
+            foreach (var image in imagesToDelete)
+            {
+                _context.Remove(image.ImageFile);
+            }
+
+            _context.RemoveRange(likesToDelete);
+            _context.RemoveRange(commentsToDelete);
+            _context.RemoveRange(userCommentsToDelete);
+            _context.RemoveRange(userLikesToDelete);
+            _context.RemoveRange(imagesToDelete);
+
+            return await Save();
         }
 
     }

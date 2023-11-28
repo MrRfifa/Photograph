@@ -79,6 +79,8 @@ namespace Backend.Migrations
                     NewEmail = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     EmailChangeToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     EmailChangeTokenExpires = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeleteAccountToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DeleteAccountTokenExpires = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Role = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
@@ -95,7 +97,7 @@ namespace Backend.Migrations
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UploadDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ImageFileId = table.Column<int>(type: "int", nullable: true),
+                    ImageFileId = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -105,7 +107,8 @@ namespace Backend.Migrations
                         name: "FK_Images_ImagesFiles_ImageFileId",
                         column: x => x.ImageFileId,
                         principalTable: "ImagesFiles",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Images_Users_UserId",
                         column: x => x.UserId,

@@ -92,7 +92,6 @@ namespace Backend.Controllers
         }
 
 
-
         [HttpPut("{userId}/account/password")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
@@ -136,21 +135,41 @@ namespace Backend.Controllers
         }
 
 
-        [HttpDelete("{userId}/account/delete")]
+        [HttpPut("{userId}/account/delete")]
         [ProducesResponseType(400)]
-        [ProducesResponseType(204)]
+        [ProducesResponseType(200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(401)]
-        public async Task<IActionResult> DeleteAccount(int userId, [FromBody] string currentPassword)
+        public async Task<IActionResult> DeleteAccount(int userId, string currentPassword)
         {
             try
             {
-                bool deleted = await _userRepository.DeleteAccount(userId, currentPassword);
-                if (deleted)
+                if (!ModelState.IsValid)
                 {
-                    return Ok(new { status = "success", message = "Account successfully deleted." });
+                    return BadRequest(ModelState);
                 }
-                return NotFound(); // 404 Not Found
+
+                var deleteAccountResult = await _userRepository.DeleteAccount(userId, currentPassword);
+                var user = await _userRepository.GetUserById(userId);
+
+                if (user.DeleteAccountToken != null && deleteAccountResult)
+                {
+                    string recipientName = $"{user.LastName} {user.FirstName}";
+                    string emailTemplate = new EmailTemplate().GetEmailDeleteAccountTemplate(recipientName, user.DeleteAccountToken);
+
+                    var sendEmailRequest = new SendEmailRequest
+                    {
+                        To = user.Email,
+                        Subject = "Deletion Of Account Verification Request",
+                        Body = emailTemplate
+                    };
+
+                    _tokenRepository.SendEmail(sendEmailRequest);
+
+                    return Ok(new { status = "success", message = "A verification mail is sent to the email address, the token will expire in 15 minutes" });
+                }
+
+                return BadRequest("Error when handling token");
             }
             catch (UserNotFoundException ex)
             {
@@ -161,6 +180,39 @@ namespace Backend.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+
+        [HttpDelete("account/verify-delete")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(401)]
+        [AllowAnonymous]
+        public async Task<IActionResult> VerifyAccountDeletion(string token)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                var deleteAccountResult = await _userRepository.DeleteAccountVerification(token);
+
+                return NoContent();
+
+            }
+            catch (UserNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
 
         [HttpGet("info")]
         [ProducesResponseType(400)]

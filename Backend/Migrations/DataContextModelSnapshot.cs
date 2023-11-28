@@ -139,6 +139,12 @@ namespace Backend.Migrations
                     b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("DeleteAccountToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeleteAccountTokenExpires")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");

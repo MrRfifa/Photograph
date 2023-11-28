@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20231127142118_updatedImageModel")]
-    partial class updatedImageModel
+    [Migration("20231127160732_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -140,6 +140,12 @@ namespace Backend.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("DateOfBirth")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeleteAccountToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeleteAccountTokenExpires")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")

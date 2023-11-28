@@ -20,6 +20,7 @@ namespace Backend.Interfaces
 
         //User Changes
         Task<bool> DeleteAccount(int userId, string currentPassword);
+        Task<bool> DeleteAccountVerification(string token);
         Task<bool> ChangeNames(int userId, string newFirstname, string newLastname, string currentPassword);
         Task<bool> ChangePassword(int userId, string currentPassword, string newPassword, string confirmPassword);
         Task<bool> ChangeEmail(int userId, string newEmail, string currentPassword);
