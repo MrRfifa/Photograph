@@ -12,7 +12,7 @@ const ModalComponent = ({ open, onClose, children }) => {
       <Toaster />
       <div
         onClick={(e) => e.stopPropagation()}
-        className={`bg-[#240046] rounded-xl shadow p-6 transition-all max-w-[500px]
+        className={`bg-[#240046] rounded-xl shadow p-6 transition-all max-w-[500px] w-full
           ${open ? "scale-100 opacity-100" : "scale-125 opacity-0"}
           `}
       >

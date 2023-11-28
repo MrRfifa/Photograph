@@ -1,5 +1,5 @@
 import { ForgetPasswordForm } from "../../Components/Forms/ForgetPasswordForm";
-import forgetImage from "../../assets/forget-password.jpg";
+import forgetImage from "../../assets/Generals/forget-password.jpg";
 
 const ForgetPasswordPage = () => {
   return (

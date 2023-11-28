@@ -101,7 +101,7 @@ const resetPassword = (token, password, confirmPassword) =>
           message: "You have successfully resetted your password",
         };
       } else {
-        return { success: false, error: "Password reset is failed" };
+        return { success: false, error: response.data };
       }
     })
     .catch((error) => {

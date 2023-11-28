@@ -1,6 +1,5 @@
 import PropTypes from "prop-types";
-import { useContext, useEffect, useState } from "react";
-import AuthContext from "../Context/AuthContext";
+import { useEffect, useState } from "react";
 import ChangePasswordForm from "./Forms/ChangePasswordForm";
 import ChangeEmailForm from "./Forms/ChangeEmailForm";
 import ModalComponent from "./ModalComponent";
@@ -9,6 +8,7 @@ import ChangeProfileImageForm from "./Forms/ChangeProfileImageForm";
 import UploadImageForm from "./Forms/UploadImageForm";
 import AuthVerifyService from "../Services/Auth/AuthVerifyService";
 import AuthService from "../Services/Auth/AuthService";
+import DeleteAccountRequestForm from "./Forms/DeleteAccountRequestForm";
 
 export const ChangeEmailModal = ({ open, onClose }) => {
   return (
@@ -24,8 +24,7 @@ ChangeEmailModal.propTypes = {
 };
 
 export const ChangePasswordModal = ({ open, onClose }) => {
-  const { userInfo } = useContext(AuthContext);
-  const userId = userInfo[3].value;
+  const userId = AuthVerifyService.getUserId();
 
   return (
     <ModalComponent open={open} onClose={onClose}>
@@ -121,4 +120,17 @@ export const ImageModal = ({ imageDetails, closeModal }) => {
 ImageModal.propTypes = {
   imageDetails: PropTypes.object.isRequired,
   closeModal: PropTypes.func,
+};
+
+export const DeleteAccountModal = ({ open, onClose }) => {
+  return (
+    <ModalComponent open={open} onClose={onClose}>
+      <DeleteAccountRequestForm />
+    </ModalComponent>
+  );
+};
+
+DeleteAccountModal.propTypes = {
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func,
 };

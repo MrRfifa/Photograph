@@ -135,11 +135,65 @@ const changeProfileImage = (fd, setProgress, setMsg) => {
     });
 };
 
+const confirmAccountDeletion = (token) =>
+  axios
+    .delete(`${API_URL}User/account/verify-delete`, {
+      params: {
+        token: token,
+      },
+    })
+    .then((response) => {
+      if (response.status == "204") {
+        return { success: true };
+      } else {
+        return { success: false };
+      }
+    })
+    .catch((error) => {
+      console.error("Deletion error:", error);
+      return { success: false, error: error.response.data };
+    });
+
+const accountDeletionRequest = async (password) => {
+  const userId = AuthVerifyService.getUserId();
+  try {
+    const response = await axios.put(
+      `${API_URL}User/${userId}/account/delete`,
+      null,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: localStorage.getItem("token"),
+        },
+        params: {
+          currentPassword: password,
+        },
+      }
+    );
+
+    if (response.data && response.data.status === "success") {
+      return { success: true, message: response.data.message };
+    } else {
+      return { success: false, error: response.data };
+    }
+  } catch (error) {
+    console.error("Deletion error:", error);
+
+    if (error.response && error.response.data) {
+      return { success: false, error: error.response.data };
+    } else {
+      return { success: false, error: "Unexpected error format" };
+    }
+  }
+};
+
 const UserService = {
   changeEmailAddress,
   changePassword,
   changeNames,
   changeProfileImage,
+  confirmAccountDeletion,
+  accountDeletionRequest,
 };
 
 export default UserService;

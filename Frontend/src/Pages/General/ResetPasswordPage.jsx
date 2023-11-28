@@ -1,5 +1,5 @@
 import { ResetPasswordForm } from "../../Components/Forms/ResetPasswordForm";
-import resetImage from "../../assets/reset-password.jpg";
+import resetImage from "../../assets/Generals/reset-password.jpg";
 
 const ResetPassword = () => {
   return (

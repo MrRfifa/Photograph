@@ -15,7 +15,7 @@ const RegisterForm = () => {
         values.firstName,
         values.lastName,
         values.gender,
-        values.dateOfBirth,
+        values.age,
         values.email,
         values.password,
         values.confirmPassword
@@ -48,7 +48,7 @@ const RegisterForm = () => {
         icon: "🤌🏻",
         className: "bg-red-500 text-white",
       });
-    }finally {
+    } finally {
       setLoading(false);
     }
   }
@@ -74,7 +74,7 @@ const RegisterForm = () => {
               password: "",
               confirmPassword: "",
               gender: "male",
-              age: "",
+              age: new Date(),
             }}
             validationSchema={Yup.object({
               firstName: Yup.string().required("First Name is required"),
@@ -196,7 +196,7 @@ const RegisterForm = () => {
                   className="text-sm mb-2 text-gray-200 cursor-pointer"
                   htmlFor="age"
                 >
-                  Age
+                  Date Of Birth
                 </label>
                 <Field
                   type="date"
@@ -223,7 +223,7 @@ const RegisterForm = () => {
                 className="bg-gradient-to-r from-[#E0B1CB] to-[#240046] text-white font-bold py-2 px-4 rounded-md mt-4 hover:bg-indigo-600 hover:to-[#7B2CBF] transition ease-in-out duration-150"
                 type="submit"
               >
-                 {loading ? "Signing up..." : "Sign Up"}
+                {loading ? "Signing up..." : "Sign Up"}
               </button>
             </Form>
           </Formik>

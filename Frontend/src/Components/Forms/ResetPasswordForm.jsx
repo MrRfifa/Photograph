@@ -29,7 +29,7 @@ export const ResetPasswordForm = () => {
           navigate("/login");
         }, 5000);
       } else {
-        toast.error("Password reset is failed", {
+        toast.error(response.error || "Password reset is failed", {
           duration: 2500,
           position: "top-right",
           icon: "💀",
