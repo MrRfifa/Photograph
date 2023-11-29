@@ -99,23 +99,29 @@ namespace Backend.Controllers
             {
                 if (userLogged == null)
                 {
-                    return BadRequest("Invalid request.");
+                    return BadRequest("Invalid request. Please provide valid login credentials.");
                 }
 
                 var token = await _authRepository.Login(userLogged);
 
                 if (string.IsNullOrEmpty(token))
                 {
-                    return BadRequest("Authentication failed.");
+                    return BadRequest("Authentication failed. Please check your credentials.");
                 }
 
                 return Ok(new { message = "success", Token = token });
             }
+            catch (UserNotFoundException)
+            {
+                return BadRequest("User not found. Please check your credentials.");
+            }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                // Log the exception for internal investigation, but provide a generic error message to the client
+                return StatusCode(400, ex.Message);
             }
         }
+
 
 
         [HttpGet("verify")]
@@ -181,22 +187,39 @@ namespace Backend.Controllers
         [ProducesResponseType(400)]
         public async Task<IActionResult> ResetPassword(ResetPasswordRequest resetPasswordRequest)
         {
-            var user = await _authRepository.GetUserByResetToken(resetPasswordRequest.Token);
-            if (user == null || user.ResetTokenExpires < DateTime.Now)
+            try
             {
-                return BadRequest("Invalid Token.");
+                var user = await _authRepository.GetUserByResetToken(resetPasswordRequest.Token);
+
+                if (user == null)
+                {
+                    return BadRequest("User not found.");
+                }
+
+                if (user.ResetTokenExpires < DateTime.Now)
+                {
+                    return BadRequest("Invalid Token.");
+                }
+
+                _tokenRepository.CreatePasswordHash(resetPasswordRequest.Password, out byte[] passwordHash, out byte[] passwordSalt);
+
+                user.PasswordHash = passwordHash;
+                user.PasswordSalt = passwordSalt;
+                user.PasswordResetToken = null;
+                user.ResetTokenExpires = null;
+
+                await _authRepository.Save();
+
+                return Ok(new { status = "success", message = "Password successfully reset." });
             }
-
-            _tokenRepository.CreatePasswordHash(resetPasswordRequest.Password, out byte[] passwordHash, out byte[] passwordSalt);
-
-            user.PasswordHash = passwordHash;
-            user.PasswordSalt = passwordSalt;
-            user.PasswordResetToken = null;
-            user.ResetTokenExpires = null;
-
-            await _authRepository.Save();
-
-            return Ok(new { status = "success", message = "Password successfully reset." });
+            catch (UserNotFoundException)
+            {
+                return BadRequest("User not found.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(400, ex.Message);
+            }
         }
 
     }

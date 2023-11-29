@@ -79,6 +79,7 @@ namespace Backend.Repositories
                 {
                     throw new Exception("Wrong password.");
                 }
+
                 string token = _tokenRepository.CreateToken(user);
 
                 return token;
@@ -88,6 +89,7 @@ namespace Backend.Repositories
                 throw ex;
             }
         }
+
 
         public async Task<bool> Register(RegisterUserDto userCreated)
         {
