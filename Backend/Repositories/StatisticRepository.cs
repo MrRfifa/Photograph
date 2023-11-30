@@ -18,13 +18,22 @@ namespace Backend.Repositories
 
         public async Task<int> NumberOfCommentsDonePerUser(int userId)
         {
-            var numComments = await _context.UsersComments.CountAsync(nc => nc.UserId == userId);
-            return numComments;
+            try
+            {
+                var numComments = await _context.UsersComments.CountAsync(nc => nc.UserId == userId);
+                return numComments;
+            }
+            catch (Exception)
+            {
+                return -1;
+            }
         }
 
         public async Task<int> NumberOfCommentsReceivedPerUser(int userId)
         {
-            int numComments = await _context.Images
+            try
+            {
+                int numComments = await _context.Images
          .Where(i => i.UserId == userId)
          .Join(
              _context.Comments,
@@ -33,27 +42,47 @@ namespace Backend.Repositories
              (image, comment) => comment.UserId)
          .CountAsync();
 
-            return numComments;
+                return numComments;
+            }
+            catch (Exception)
+            {
+                return -1;
+            }
         }
 
         public async Task<int> NumberOfLikesDonePerUser(int userId)
         {
-            var numLikes = await _context.UsersLikes.CountAsync(nc => nc.UserId == userId);
-            return numLikes;
+            try
+            {
+                var numLikes = await _context.UsersLikes.CountAsync(nc => nc.UserId == userId);
+                return numLikes;
+            }
+            catch (Exception)
+            {
+                return -1;
+            }
         }
 
         public async Task<int> NumberOfLikesReceivedPerUser(int userId)
         {
-            int numLikes = await _context.Images
-        .Where(i => i.UserId == userId)
-        .Join(
-            _context.Likes,
-            image => image.Id,
-            like => like.ImageId,
-            (image, like) => like.UserId)
-        .CountAsync();
+            try
+            {
+                int numLikes = await _context.Images
+                    .Where(i => i.UserId == userId)
+                    .Join(
+                        _context.Likes,
+                        image => image.Id,
+                        like => like.ImageId,
+                        (image, like) => like.UserId)
+                    .CountAsync();
 
-            return numLikes;
+                return numLikes;
+            }
+            catch (Exception)
+            {
+                return -1;
+            }
         }
+
     }
 }

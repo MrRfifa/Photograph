@@ -23,7 +23,7 @@ namespace Backend.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        public async Task<ActionResult<object>> LikesReceivedPerUser(int userId)
+        public async Task<IActionResult> LikesReceivedPerUser(int userId)
         {
             try
             {
@@ -42,7 +42,7 @@ namespace Backend.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        public async Task<ActionResult<object>> CommentsReceivedPerUser(int userId)
+        public async Task<IActionResult> CommentsReceivedPerUser(int userId)
         {
             try
             {
@@ -61,7 +61,7 @@ namespace Backend.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        public async Task<ActionResult<int>> LikesDonePerUser(int userId)
+        public async Task<IActionResult> LikesDonePerUser(int userId)
         {
             try
             {
@@ -80,7 +80,7 @@ namespace Backend.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        public async Task<ActionResult<int>> CommentsDonePerUser(int userId)
+        public async Task<IActionResult> CommentsDonePerUser(int userId)
         {
             try
             {
