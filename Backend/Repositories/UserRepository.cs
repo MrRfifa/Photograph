@@ -64,7 +64,7 @@ namespace Backend.Repositories
             // Verify the user's password
             if (!_tokenRepository.VerifyPasswordHash(currentPassword, user.PasswordHash, user.PasswordSalt))
             {
-                throw new Exception("Incorrect password. Email change request denied.");
+                throw new Exception("Incorrect password. Names change request denied.");
             }
 
             user.FirstName = newFirstname;
@@ -125,7 +125,7 @@ namespace Backend.Repositories
 
         public async Task<bool> DeleteAccountVerification(string token)
         {
-            var user = GetUserByDeleteAccountToken(token);
+            var user = await GetUserByDeleteAccountToken(token);
 
             if (user == null)
             {
@@ -183,11 +183,11 @@ namespace Backend.Repositories
             return user;
         }
 
-        public User GetUserByDeleteAccountToken(string token)
+        public async Task<User> GetUserByDeleteAccountToken(string token)
         {
-            var users = _context.Users
+            var users = await _context.Users
                 .Where(u => u.DeleteAccountToken == token)
-                .ToList();
+                .ToListAsync();
 
             var user = users.FirstOrDefault();
 

@@ -89,7 +89,11 @@ namespace Backend.Controllers
         public async Task<IActionResult> VerifyEmailChange(string token)
         {
             var user = await _userRepository.GetUserByEmailChangeToken(token);
-            if (user == null || user.EmailChangeTokenExpires < DateTime.Now)
+            if (user == null)
+            {
+                return BadRequest("User not found");
+            }
+            if (user.EmailChangeTokenExpires < DateTime.Now)
             {
                 return BadRequest("Invalid token.");
             }
@@ -110,20 +114,34 @@ namespace Backend.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> ChangePassword(int userId, [FromBody] ChangePasswordRequest changePasswordRequest)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest(ModelState);
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                var changePasswordResult = await _userRepository.ChangePassword(userId, changePasswordRequest.CurrentPassword, changePasswordRequest.Password, changePasswordRequest.ConfirmPassword);
+
+                if (changePasswordResult)
+                {
+                    return Ok(new { status = "success", message = "Password changed successfully." });
+                }
+                else
+                {
+                    return BadRequest(changePasswordResult);
+                }
             }
-
-            var changePasswordResult = await _userRepository.ChangePassword(userId, changePasswordRequest.CurrentPassword, changePasswordRequest.Password, changePasswordRequest.ConfirmPassword);
-
-            if (changePasswordResult)
+            catch (UserNotFoundException ex)
             {
-                return Ok(new { status = "success", message = "Password changed successfully." });
+                return StatusCode(500, ex.Message);
             }
-
-            return BadRequest(changePasswordResult);
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
+
 
         [HttpPut("{userId}/account/names")]
         [ProducesResponseType(400)]
@@ -131,20 +149,34 @@ namespace Backend.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> ChangeNames(int userId, [FromBody] ChangeNamesRequest changeNamesRequest)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest(ModelState);
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                var changeNamesResult = await _userRepository.ChangeNames(userId, changeNamesRequest.NewFirstname, changeNamesRequest.NewLastname, changeNamesRequest.CurrentPassword);
+
+                if (changeNamesResult)
+                {
+                    return Ok(new { status = "success", message = "Names changed successfully." });
+                }
+                else
+                {
+                    return BadRequest(changeNamesResult);
+                }
             }
-
-            var changeNamesResult = await _userRepository.ChangeNames(userId, changeNamesRequest.NewFirstname, changeNamesRequest.NewLastname, changeNamesRequest.CurrentPassword);
-
-            if (changeNamesResult)
+            catch (UserNotFoundException ex)
             {
-                return Ok(new { status = "success", message = "Names changed successfully." });
+                return StatusCode(404, ex.Message);
             }
-
-            return BadRequest(changeNamesResult);
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
+
 
 
         [HttpPut("{userId}/account/delete")]
@@ -250,26 +282,37 @@ namespace Backend.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(401)]
-
         public async Task<IActionResult> GetUserSpecificInfo(int userId)
         {
-            var user = await _userRepository.GetUserById(userId);
-
-            if (user is null)
+            try
             {
-                throw new UserNotFoundException("User not found");
+                var user = await _userRepository.GetUserById(userId);
+
+                if (user is null)
+                {
+                    return NotFound("User not found");
+                }
+
+                var userToReturn = new GetUserDto
+                {
+                    Email = user.Email,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    FileName = user.FileName,
+                    FileContentBase64 = user.FileContentBase64
+                };
+
+                return Ok(new { status = "success", message = userToReturn });
             }
-
-            var userToReturn = new GetUserDto
+            catch (UserNotFoundException ex)
             {
-                Email = user.Email,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                FileName = user.FileName,
-                FileContentBase64 = user.FileContentBase64
-            };
-
-            return Ok(new { status = "success", message = userToReturn });
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
+
     }
 }
