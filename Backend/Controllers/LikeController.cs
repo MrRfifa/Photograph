@@ -99,7 +99,7 @@ namespace Backend.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        public async Task<ActionResult<int>> LikesPerImage(int imageId)
+        public async Task<IActionResult> LikesPerImage(int imageId)
         {
             try
             {
@@ -109,7 +109,6 @@ namespace Backend.Controllers
             }
             catch (Exception ex)
             {
-                // Handle the exception, log it, or return an error response.
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing the request: " + ex.Message);
             }
         }

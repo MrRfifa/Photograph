@@ -54,9 +54,17 @@ namespace Backend.Repositories
 
         public async Task<int> NumberOfLikesPerImage(int imageId)
         {
+            var imageExists = await _context.Images.AnyAsync(i => i.Id == imageId);
+
+            if (!imageExists)
+            {
+                throw new Exception($"Image with ID {imageId} not found");
+            }
+
             var numLikes = await _context.UsersLikes.CountAsync(i => i.ImageId == imageId);
             return numLikes;
         }
+
 
         public async Task<bool> Save()
         {
@@ -72,10 +80,8 @@ namespace Backend.Repositories
             var like = await _context.Likes
                 .FirstOrDefaultAsync(l => l.UserId == userId && l.ImageId == imageId);
 
-            // Check if either like or userLike is null
             if (like == null || userLike == null)
             {
-                // User hasn't liked the image, you may handle this case accordingly
                 return false;
             }
 

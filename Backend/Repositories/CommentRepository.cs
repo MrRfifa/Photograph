@@ -18,6 +18,13 @@ namespace Backend.Repositories
         }
         public async Task<bool> CommentImage(int userId, int imageId, string commentText)
         {
+            var imageExists = await _context.Images.AnyAsync(i => i.Id == imageId);
+
+            if (!imageExists)
+            {
+                throw new Exception($"Image with ID {imageId} not found");
+            }
+
             var userComment = new UserComment()
             {
                 UserId = userId,
@@ -45,6 +52,12 @@ namespace Backend.Repositories
 
         public async Task<bool> DeleteCommentImage(int userId, int imageId, int userCommentId)
         {
+            var imageExists = await _context.Images.AnyAsync(i => i.Id == imageId);
+
+            if (!imageExists)
+            {
+                throw new Exception($"Image with ID {imageId} not found");
+            }
             var userComment = await _context.UsersComments
                 .FirstOrDefaultAsync(l => l.UserCommentId == userCommentId && l.UserId == userId && l.ImageId == imageId);
 
@@ -74,11 +87,23 @@ namespace Backend.Repositories
 
         public async Task<List<Comment>> GetCommentPerImage(int imageId)
         {
+            var imageExists = await _context.Images.AnyAsync(i => i.Id == imageId);
+
+            if (!imageExists)
+            {
+                throw new Exception($"Image with ID {imageId} not found");
+            }
             return await _context.Comments.Where(i => i.ImageId == imageId).OrderByDescending(i => i.CommentDate).ToListAsync();
         }
 
         public async Task<int> NumberOfCommentsPerImage(int imageId)
         {
+            var imageExists = await _context.Images.AnyAsync(i => i.Id == imageId);
+
+            if (!imageExists)
+            {
+                throw new Exception($"Image with ID {imageId} not found");
+            }
             var numComments = await _context.UsersComments.CountAsync(i => i.ImageId == imageId);
             return numComments;
         }
@@ -91,6 +116,12 @@ namespace Backend.Repositories
 
         public async Task<bool> UpdateCommentImage(int userId, int imageId, int userCommentId, string newComment)
         {
+            var imageExists = await _context.Images.AnyAsync(i => i.Id == imageId);
+
+            if (!imageExists)
+            {
+                throw new Exception($"Image with ID {imageId} not found");
+            }
             var commentToUpdate = await GetCommentByUserCommentId(userCommentId);
 
             commentToUpdate.Text = newComment;

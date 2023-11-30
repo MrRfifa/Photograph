@@ -25,7 +25,7 @@ namespace Backend.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        public async Task<ActionResult<int>> NumberOfCommentsPerImage(int imageId)
+        public async Task<IActionResult> NumberOfCommentsPerImage(int imageId)
         {
             try
             {
@@ -44,7 +44,7 @@ namespace Backend.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        public async Task<ActionResult<List<Comment>>> CommentsPerImage(int imageId)
+        public async Task<IActionResult> CommentsPerImage(int imageId)
         {
             try
             {
@@ -64,7 +64,7 @@ namespace Backend.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        public async Task<ActionResult<object>> CommentImage(int userId, int imageId, [FromBody] string commentText)
+        public async Task<IActionResult> CommentImage(int userId, int imageId, [FromBody] string commentText)
         {
             try
             {
