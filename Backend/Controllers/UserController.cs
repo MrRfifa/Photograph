@@ -35,40 +35,52 @@ namespace Backend.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> ChangeEmail(int userId, [FromBody] ChangeEmailRequest changeEmailRequest)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest(ModelState);
-            }
-
-            var changeEmailResult = await _userRepository.ChangeEmail(userId, changeEmailRequest.NewEmail, changeEmailRequest.CurrentPassword);
-            var user = await _userRepository.GetUserById(userId);
-
-            if (user.EmailChangeToken != null)
-            {
-                string recipientName = user.LastName + " " + user.FirstName;
-                string emailTemplate = new EmailTemplate().GetEmailChangeConfirmationTemplate(recipientName, user.EmailChangeToken);
-
-                var sendEmailRequest = new SendEmailRequest
+                if (!ModelState.IsValid)
                 {
-                    To = changeEmailRequest.NewEmail,
-                    Subject = "Email verification request",
-                    Body = emailTemplate
-                };
-
-                if (changeEmailResult)
-                {
-                    _tokenRepository.SendEmail(sendEmailRequest);
-
-                    return Ok(new { status = "success", message = "A verification mail is sent to the new address, the token will expire in 15 minutes" });
+                    return BadRequest("ModelState");
                 }
-            }
-            else
-            {
-                return BadRequest("Error when handling token");
-            }
 
-            return BadRequest(changeEmailResult);
+                var changeEmailResult = await _userRepository.ChangeEmail(userId, changeEmailRequest.NewEmail, changeEmailRequest.CurrentPassword);
+                var user = await _userRepository.GetUserById(userId);
+
+                if (user.EmailChangeToken != null)
+                {
+                    string recipientName = user.LastName + " " + user.FirstName;
+                    string emailTemplate = new EmailTemplate().GetEmailChangeConfirmationTemplate(recipientName, user.EmailChangeToken);
+
+                    var sendEmailRequest = new SendEmailRequest
+                    {
+                        To = changeEmailRequest.NewEmail,
+                        Subject = "Email verification request",
+                        Body = emailTemplate
+                    };
+
+                    if (changeEmailResult)
+                    {
+                        _tokenRepository.SendEmail(sendEmailRequest);
+
+                        return Ok(new { status = "success", message = "A verification mail is sent to the new address, the token will expire in 15 minutes" });
+                    }
+                }
+                else
+                {
+                    return BadRequest("Error when handling token");
+                }
+
+                return BadRequest(changeEmailResult);
+            }
+            catch (UserNotFoundException ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
+
 
         [AllowAnonymous]
         [HttpGet("verify")]
