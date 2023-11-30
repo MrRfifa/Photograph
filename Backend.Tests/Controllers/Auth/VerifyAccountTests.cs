@@ -1,10 +1,3 @@
-using System.Threading.Tasks;
-using AutoFixture;
-using AutoFixture.Kernel; // Add this namespace for EnumRelay
-using FakeItEasy;
-using FluentAssertions;
-using Microsoft.AspNetCore.Mvc;
-using Xunit;
 
 namespace Backend.Tests.Controllers.Auth
 {

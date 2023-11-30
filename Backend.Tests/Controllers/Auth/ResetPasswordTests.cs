@@ -1,10 +1,3 @@
-using System.Threading.Tasks;
-using AutoFixture;
-using AutoFixture.Kernel; // Add this namespace for EnumRelay
-using FakeItEasy;
-using FluentAssertions;
-using Microsoft.AspNetCore.Mvc;
-using Xunit;
 
 namespace Backend.Tests.Controllers.Auth
 {
@@ -89,6 +82,7 @@ namespace Backend.Tests.Controllers.Auth
             var user = fixture.Build<User>()
                             .With(uc => uc.Gender, UsersGenders.male | UsersGenders.female)
                             .With(uc => uc.Role, UsersRoles.owner | UsersRoles.admin)
+                            .With(u => u.ResetTokenExpires, DateTime.Now.AddDays(1))
                             .Create();
 
             A.CallTo(() => _authRepository.GetUserByResetToken(resetPasswordRequest.Token))
@@ -105,7 +99,5 @@ namespace Backend.Tests.Controllers.Auth
             result.StatusCode.Should().Be(200);
             result.Value.Should().BeEquivalentTo(new { status = "success", message = "Password successfully reset." });
         }
-
-
     }
 }
