@@ -125,57 +125,43 @@ namespace Backend.Tests.Controllers.Images
             result.Value.Should().BeEquivalentTo($"An error occurred while processing the request: Image not saved successfully");
         }
 
-        // [Fact]
-        // public async Task UploadImage_ImageSavedSuccessfully_ReturnsOkResult()
-        // {
-        //     // Arrange
-        //     var fixture = new Fixture();
-        //     fixture.Customizations.Add(
-        //         new TypeRelay(
-        //             typeof(Microsoft.AspNetCore.Http.IFormFile),
-        //             typeof(IFormFile)));
-        //     fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList()
-        //         .ForEach(b => fixture.Behaviors.Remove(b));
-        //     fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+        [Fact]
+        public async Task UploadImage_ImageSavedSuccessfully_ReturnsOkResult()
+        {
+            // Arrange
+            var fixture = new Fixture();
+            fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList()
+                .ForEach(b => fixture.Behaviors.Remove(b));
+            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
 
-        //     // Create a non-empty stream
-        //     using var stream = new MemoryStream(Encoding.UTF8.GetBytes("This is a non-empty stream."));
+            // Create a non-empty stream
+            using var stream = new MemoryStream(Encoding.UTF8.GetBytes("This is a non-empty stream."));
 
-        //     var formFile = new FormFile(stream, 0, stream.Length, "streamFile", "image.jpg");
-        //     var image = new UploadImageRequest
-        //     {
-        //         file = formFile,
-        //         ImageTitle = fixture.Create<string>(),
-        //         ImageDescription = fixture.Create<string>()
-        //     };
+            var formFile = new FormFile(stream, 0, stream.Length, "streamFile", "image.jpg");
 
-        //     var validUserId = fixture.Create<int>();
+            var image = new UploadImageRequest
+            {
+                file = formFile,
+                ImageTitle = fixture.Create<string>(),
+                ImageDescription = fixture.Create<string>()
+            };
 
-        //     var user = fixture.Build<User>()
-        //         .With(uc => uc.Gender, UsersGenders.male | UsersGenders.female)
-        //         .With(uc => uc.Role, UsersRoles.owner | UsersRoles.admin)
-        //         .Create();
+            var validUserId = fixture.Create<int>();
 
-        //     A.CallTo(() => _userRepository.GetUserById(validUserId))
-        //         .Returns(user);
+            A.CallTo(() =>
+                _imageRepository.UploadImage(formFile, validUserId, image.ImageDescription, image.ImageTitle))
+                .Returns(true);
 
-        //     A.CallTo(() => _imageRepository.Save())
-        //         .Returns(true);
+            var controller = new ImageController(_userRepository, _imageRepository);
 
-        //     A.CallTo(() =>
-        //         _imageRepository.UploadImage(formFile, validUserId, image.ImageTitle, image.ImageDescription))
-        //         .Returns(true);
+            // Act
+            var result = await controller.UploadImage(validUserId, image) as ObjectResult;
 
-        //     var controller = new ImageController(_userRepository, _imageRepository);
-
-        //     // Act
-        //     var result = await controller.UploadImage(validUserId, image) as ObjectResult;
-
-        //     // Assert
-        //     result.Should().NotBeNull();
-        //     result.StatusCode.Should().Be(200);
-        //     result.Value.Should().BeEquivalentTo(new { status = "success", message = "Image uploaded successfully." });
-        // }
+            // Assert
+            result.Should().NotBeNull();
+            result.StatusCode.Should().Be(200);
+            result.Value.Should().BeEquivalentTo(new { status = "success", message = "Image uploaded successfully." });
+        }
 
 
 
