@@ -121,7 +121,12 @@ namespace Backend.Controllers
                 {
                     return BadRequest("Invalid file.");
                 }
+                var user = await _userRepository.GetUserById(userId);
 
+                if (user == null)
+                {
+                    throw new UserNotFoundException("User not found");
+                }
                 var profileImageUploaded = await _imageRepository.UploadProfileImage(file, userId);
                 if (!profileImageUploaded)
                 {
