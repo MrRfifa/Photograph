@@ -1,5 +1,6 @@
 using Backend.Data;
 using Backend.Dtos.requests;
+using Backend.Exceptions;
 using Backend.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,7 +15,7 @@ namespace Backend.Controllers
         private readonly IUserRepository _userRepository;
         private readonly IImageRepository _imageRepository;
 
-        public ImageController(DataContext context, IUserRepository userRepository, IImageRepository imageRepository)
+        public ImageController(IUserRepository userRepository, IImageRepository imageRepository)
         {
             _imageRepository = imageRepository;
             _userRepository = userRepository;
@@ -33,6 +34,13 @@ namespace Backend.Controllers
                     return BadRequest("Invalid file.");
                 }
 
+                var user = await _userRepository.GetUserById(userId);
+
+                if (user is null)
+                {
+                    throw new UserNotFoundException($"User with ID {userId} not found");
+                }
+
                 var imageToSave = await _imageRepository.UploadImage(uploadImageRequest.file, userId, uploadImageRequest.ImageDescription, uploadImageRequest.ImageTitle);
 
                 if (!imageToSave)
@@ -42,12 +50,18 @@ namespace Backend.Controllers
 
                 return Ok(new { status = "success", message = "Image uploaded successfully." });
             }
+            catch (UserNotFoundException ex)
+            {
+                // Handle the user not found exception
+                return NotFound(ex.Message);
+            }
             catch (Exception ex)
             {
-                // Handle the exception, log it, or return an error response.
+                // Handle other exceptions, log them, or return an error response.
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing the request: " + ex.Message);
             }
         }
+
 
         [HttpGet("get/{imageId}")]
         [ProducesResponseType(200)]
