@@ -1,3 +1,4 @@
+
 # Photograph App
 
 Photograph is a social media application developed using React, .NET, SQL, and SMTP. It allows users to create accounts, upload images, like and comment on other users' photos, creating a dynamic and engaging community.
@@ -5,11 +6,8 @@ Photograph is a social media application developed using React, .NET, SQL, and S
 ## Table of Contents
 
 - [Features](#features)
-- [Files](#files)
 - [Technologies Used](#technologies_used)
-- [Installation](#installation)
-
-
+- [Usage](#usage)
 ## Features
 
 - **User Authentication:** Secure user accounts with authentication features.
@@ -18,6 +16,7 @@ Photograph is a social media application developed using React, .NET, SQL, and S
 - **Notifications:** Receive email notifications for various activities.
 - **Responsive Design:** A responsive design that ensures a seamless user experience across devices.
 
+
 ## Technologies Used
 
 - **Frontend:** React
@@ -25,15 +24,81 @@ Photograph is a social media application developed using React, .NET, SQL, and S
 - **Database:** SQL
 - **Email Notifications:** SMTP
 
-## Installation
 
-1. **Clone the repository**:
+## Usage
 
-```bash
-git clone https://github.com/your-username/photograph-app.git
-```
+1. **Clone this repository** to your local machine:
 
-2. **Navigate to the cloned directory**
+    ```bash
+    git clone https://github.com/mrrfifa/photograph.git
+    ```
+
+2. **Navigate to the cloned directory**:
+
     ```bash
     cd photograph
     ```
+
+3. **Install dependencies**:
+
+    # Frontend 
+    ```bash
+    cd frontend
+    ```
+    ```bash
+    npm install
+    ```
+
+    # Backend
+    ```bash
+    cd backend
+    ```
+    ```bash
+    dotnet restore
+    ```
+    In the backend directory create a .env file
+    ```hcl
+    EMAIL_ADDRESS=TCMP_Email_address
+    EMAIL_USERNAME=TCMP_Username
+    EMAIL_PASSWORD=TCMP_Password
+    EMAIL_HOST=TCMP_Host
+    DB_CONNECTION_STRING="Your_connection_string"
+    CORS="frontend_url"
+    ```
+
+4. **Run migrations and updates**:
+
+    ```bash
+    cd backend
+    ```
+    ```bash
+    dotnet ef migrations add InitialCreate
+    ```
+    ```bash
+    dotnet ef database update
+    ```
+    
+
+5. **Initialize Terraform by running**:
+    
+    ```bash
+    cd backend
+    ```
+    ```bash
+    dotnet run
+    ```
+    
+    ```bash
+    cd frontend
+    ```
+    ```bash
+    npm run dev
+    ```
+
+6. **Review the plan to ensure everything is set up correctly:**:
+      ```bash
+    terraform plan
+    ```
+## Screenshots
+
+
