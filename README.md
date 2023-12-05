@@ -8,6 +8,7 @@ Photograph is a social media application developed using React, .NET, SQL, and S
 - [Features](#features)
 - [Technologies Used](#technologies-used)
 - [Usage](#usage)
+- [Demo](#demo)
 ## Features
 
 - **User Authentication:** Secure user accounts with authentication features.
@@ -79,7 +80,7 @@ Photograph is a social media application developed using React, .NET, SQL, and S
     ```
     
 
-5. **Initialize Terraform by running**:
+5. **Run The application**:
     
     ```bash
     cd backend
@@ -93,6 +94,13 @@ Photograph is a social media application developed using React, .NET, SQL, and S
     ```
     ```bash
     npm run dev
+    ```
+6. **Dotnet Tests**:
+   ```bash
+    cd backend
+    ```
+    ```bash
+    dotnet test
     ```
 
 ## Demo
