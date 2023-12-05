@@ -2,6 +2,14 @@
 
 Photograph is a social media application developed using React, .NET, SQL, and SMTP. It allows users to create accounts, upload images, like and comment on other users' photos, creating a dynamic and engaging community.
 
+## Table of Contents
+
+- [Features](#features)
+- [Files](#files)
+- [Technologies Used](#technologies_used)
+- [Installation](#installation)
+
+
 ## Features
 
 - **User Authentication:** Secure user accounts with authentication features.
