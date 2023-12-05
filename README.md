@@ -6,7 +6,7 @@ Photograph is a social media application developed using React, .NET, SQL, and S
 ## Table of Contents
 
 - [Features](#features)
-- [Technologies Used](#technologiesused)
+- [Technologies Used](#technologies-used)
 - [Usage](#usage)
 ## Features
 
