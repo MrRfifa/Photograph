@@ -98,13 +98,18 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Automatically apply database migrations -$$$$$$
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
-    var dbContext = services.GetRequiredService<DataContext>();
-    dbContext.Database.Migrate();
+
+    var context = services.GetRequiredService<DataContext>();
+    if (context.Database.GetPendingMigrations().Any())
+    {
+        context.Database.Migrate();
+    }
 }
+
+
 
 
 // Configure the HTTP request pipeline.

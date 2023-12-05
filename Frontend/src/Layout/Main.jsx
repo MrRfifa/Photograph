@@ -11,9 +11,9 @@ const Main = () => {
         <h1 className="md:text-7xl sm:text-6xl text-4xl font-bold md:py-6">
           Grow with camera.
         </h1>
-        <div className="flex flex-row justify-center items-center">
+        <div className="flex flex-col md:flex-row justify-center items-center ">
           <p className="md:text-5xl sm:text-4xl text-xl font-bold py-4">
-            Stunning, creative designs for
+            Stunning, creative images for
           </p>
           <TypeAnimation
             sequence={[

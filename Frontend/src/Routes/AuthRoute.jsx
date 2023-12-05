@@ -4,7 +4,7 @@ import LoginPage from "../Pages/General/LoginPage";
 import RegisterPage from "../Pages/General/RegisterPage";
 import ForgetPasswordPage from "../Pages/General/ForgetPasswordPage";
 import ResetPasswordPage from "../Pages/General/ResetPasswordPage";
-import DeleteAccountPage from "../Pages/General/DeleteAccountPAge";
+import DeleteAccountPage from "../Pages/General/DeleteAccountPage";
 
 function AuthRoute() {
   return (

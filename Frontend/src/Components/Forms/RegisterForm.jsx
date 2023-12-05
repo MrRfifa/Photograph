@@ -11,6 +11,7 @@ const RegisterForm = () => {
   const navigate = useNavigate();
   async function onFinish(values) {
     try {
+      setLoading(true);
       const response = await AuthService.register(
         values.firstName,
         values.lastName,
