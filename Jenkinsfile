@@ -26,10 +26,11 @@ pipeline {
             dir('Backend') {
               script {
                 def scannerHome = tool 'sonar'
+                def scannerHomeBuild = tool 'sonarBuild'
                 withSonarQubeEnv('SonarQube') {
-                  sh "${scannerHome}/SonarScanner.MSBuild.dll begin /k:${SONAR_PROJECT_KEY} /d:sonar.host.url=${SONAR_SERVER_URL}"
+                  sh "${scannerHomeBuild} begin /k:${SONAR_PROJECT_KEY} /d:sonar.host.url=${SONAR_SERVER_URL} /d:sonar.login=${SONAR_TOKEN_BACK}"
                   sh 'dotnet build'
-                  sh "${scannerHome}/SonarScanner.MSBuild.dll end /d:sonar.login=${SONAR_TOKEN_BACK}"
+                  sh "${scannerHomeBuild} end /d:sonar.login=${SONAR_TOKEN_BACK}"
                 }
               }
             }
