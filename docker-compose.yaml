@@ -23,22 +23,22 @@ services:
       EMAIL_USERNAME: "donna86@ethereal.email"
       EMAIL_PASSWORD: "5rBS8SsfWe9dWfv5eA"
       EMAIL_HOST: "smtp.ethereal.email"
-      DB_CONNECTION_STRING: "Server=sql_server,1433;Initial Catalog=PhotographDb;User Id=sa;Password=YourPassword123!;Encrypt=False;"
+      DB_CONNECTION_STRING: "Server=ANOUAR\\SQLEXPRESS;Initial Catalog=photographDb;Trusted_connection=true;TrustServerCertificate=true;Encrypt=False;"
       CORS: "http://frontend:5173"
-    depends_on:
-      - sql_server
+    # depends_on:
+    #   - sql_server
     networks:
       - my-network
 
-  sql_server:
-    image: mcr.microsoft.com/mssql/server
-    ports:
-      - "1433:1433"
-    environment:
-      ACCEPT_EULA: "Y"
-      SA_PASSWORD: "YourPassword123!"
-    networks:
-      - my-network
+  # sql_server:
+  #   image: mcr.microsoft.com/mssql/server
+  #   ports:
+  #     - "1433:1433"
+  #   environment:
+  #     ACCEPT_EULA: "Y"
+  #     SA_PASSWORD: "S3cur3P@ssW0rd!"
+  #   networks:
+  #     - my-network
 
 networks:
   my-network:
