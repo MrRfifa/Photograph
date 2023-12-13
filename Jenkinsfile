@@ -28,9 +28,9 @@ pipeline {
                 def scannerHome = tool 'sonar'
                 def scannerHomeBuild = tool 'sonarBuild'
                 withSonarQubeEnv('SonarQube') {
-                  sh "sudo ${scannerHomeBuild} begin /k:${SONAR_PROJECT_KEY} /d:sonar.host.url=${SONAR_SERVER_URL} /d:sonar.login=${SONAR_TOKEN_BACK}"
+                  sh "./var/jenkins_home/tools/hudson.plugins.sonar.MsBuildSQRunnerInstallation/sonarBuild/SonarScanner.MSBuild.exe begin /k:${SONAR_PROJECT_KEY} /d:sonar.host.url=${SONAR_SERVER_URL} /d:sonar.login=${SONAR_TOKEN_BACK}"
                   sh 'dotnet build'
-                  sh "sudo ${scannerHomeBuild} end /d:sonar.login=${SONAR_TOKEN_BACK}"
+                  sh "./var/jenkins_home/tools/hudson.plugins.sonar.MsBuildSQRunnerInstallation/sonarBuild/SonarScanner.MSBuild.exe end /d:sonar.login=${SONAR_TOKEN_BACK}"
                 }
               }
             }
