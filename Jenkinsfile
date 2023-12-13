@@ -21,21 +21,21 @@ pipeline {
 
     stage('Analyses SonarQube') {
       parallel {
-        stage('SonarQube analysis - Back') {
-          steps {
-            dir('Backend') {
-              script {
-                def scannerHome = tool 'sonar'
-                def scannerHomeBuild = tool 'sonarBuild'
-                withSonarQubeEnv('SonarQube') {
-                  sh "./var/jenkins_home/tools/hudson.plugins.sonar.MsBuildSQRunnerInstallation/sonarBuild/SonarScanner.MSBuild.exe begin /k:${SONAR_PROJECT_KEY} /d:sonar.host.url=${SONAR_SERVER_URL} /d:sonar.login=${SONAR_TOKEN_BACK}"
-                  sh 'dotnet build'
-                  sh "./var/jenkins_home/tools/hudson.plugins.sonar.MsBuildSQRunnerInstallation/sonarBuild/SonarScanner.MSBuild.exe end /d:sonar.login=${SONAR_TOKEN_BACK}"
-                }
-              }
-            }
-          }
-        }
+        // stage('SonarQube analysis - Back') {
+        //   steps {
+        //     dir('Backend') {
+        //       script {
+        //         def scannerHome = tool 'sonar'
+        //         def scannerHomeBuild = tool 'sonarBuild'
+        //         withSonarQubeEnv('SonarQube') {
+        //           sh "./var/jenkins_home/tools/hudson.plugins.sonar.MsBuildSQRunnerInstallation/sonarBuild/SonarScanner.MSBuild.exe begin /k:${SONAR_PROJECT_KEY} /d:sonar.host.url=${SONAR_SERVER_URL} /d:sonar.login=${SONAR_TOKEN_BACK}"
+        //           sh 'dotnet build'
+        //           sh "./var/jenkins_home/tools/hudson.plugins.sonar.MsBuildSQRunnerInstallation/sonarBuild/SonarScanner.MSBuild.exe end /d:sonar.login=${SONAR_TOKEN_BACK}"
+        //         }
+        //       }
+        //     }
+        //   }
+        // }
 
         stage('SonarQube analysis - Front') {
           steps {
@@ -81,9 +81,12 @@ pipeline {
 
     stage('Push images to Docker Hub') {
       steps {
-        sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD'
+        withCredentials([string(credentialsId: 'docker_credentials', variable: 'DOCKER_PASSWORD')]) {
+          
+        sh 'docker login -u $DOCKER_USERNAME -p \${DOCKER_PASSWORD}'
         sh 'docker push $DOCKER_USERNAME/backend-photograph:1.0'
         sh 'docker push $DOCKER_USERNAME/frontend-photograph:1.0'
+        }
       }
     }
     stage('Set Azure Subscription') {
