@@ -136,7 +136,7 @@ output "vm_ip" {
 
 
 resource "azurerm_storage_account" "myapp_storage_account" {
-  name                     = "${var.env_prefix}-storage-account-myapp"
+  name                     = "${var.env_prefix}-storage-account"
   resource_group_name      = azurerm_resource_group.myapp-res-grp.name
   location                 = "West Europe"
   account_tier             = "Standard"
@@ -162,8 +162,4 @@ resource "azurerm_mssql_database" "myapp_sql_database" {
   sku_name       = "S0"
   zone_redundant = true
   enclave_type   = "VBS"
-
-  tags = {
-    foo = "bar"
-  }
 }
