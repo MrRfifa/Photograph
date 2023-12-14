@@ -53,10 +53,9 @@ pipeline {
           steps {
             dir('Frontend') {
               script {
-                def scannerHome = tool 'sonar'
-                echo ${PROJECT_KEY_IN_SONAR_CLIENT}
+                def scannerHome = tool 'sonarqube'
                 
-                withSonarQubeEnv('SonarQube') {
+                withSonarQubeEnv('sonarqube') {
                   sh ""
                   "${scannerHome}/bin/sonar-scanner \
                     -Dsonar.projectKey=${PROJECT_KEY_IN_SONAR_CLIENT} \
