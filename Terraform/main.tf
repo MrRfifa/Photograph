@@ -136,7 +136,7 @@ output "vm_ip" {
 
 
 resource "azurerm_storage_account" "myapp_storage_account_for_test" {
-  name                     = "exampleeeeesa"
+  name                     = "storage_account_sa"
   resource_group_name      = azurerm_resource_group.myapp-res-grp.name
   location                 = "West Europe"
   account_tier             = "Standard"
