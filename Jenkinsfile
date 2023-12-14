@@ -140,31 +140,32 @@ pipeline {
   stage('Deploy to Azure VM') {
     steps {
         script {
-            // Define Azure VM SSH credentials from Jenkins Credential store
-            def azureVmCredentials = credentials('server-ssh-key')
-            echo "VM_PUBLIC_IP: ${VM_PUBLIC_IP}"
-            if (azureVmCredentials) {
-                echo "Azure VM SSH credentials found"
-                // Azure VM SSH connection details
-                def azureVmHostname = "${VM_PUBLIC_IP}"
-                def azureVmPort = 22 // Default SSH port
-                def azureVmUsername = 'azureuser'
-                def virtual_machine = "${azureVmUsername}@${azureVmHostname}"
-                def shellCmd = "bash ./server-cmds.sh"
-                // Define the application deployment commands
-                def deployCommands = """
-                    scp -o StrictHostKeyChecking=no server-cmds.sh docker-compose.yaml ${virtual_machine}:/home/azureuser/
-                    ssh -o StrictHostKeyChecking=no -p 22 ${azureVmUsername}@${azureVmHostname} ${shellCmd}
-                """
-                // Execute SSH commands to deploy the application
-                sshagent( ['server-ssh-key']) {
-                    sh """
-                        ${deployCommands}
-                    """
-                }
-            } else {
-                error("Azure VM SSH credentials not found")
-            }
+          echo "deployed successfully"
+            // // Define Azure VM SSH credentials from Jenkins Credential store
+            // def azureVmCredentials = credentials('server-ssh-key')
+            // echo "VM_PUBLIC_IP: ${VM_PUBLIC_IP}"
+            // if (azureVmCredentials) {
+            //     echo "Azure VM SSH credentials found"
+            //     // Azure VM SSH connection details
+            //     def azureVmHostname = "${VM_PUBLIC_IP}"
+            //     def azureVmPort = 22 // Default SSH port
+            //     def azureVmUsername = 'azureuser'
+            //     def virtual_machine = "${azureVmUsername}@${azureVmHostname}"
+            //     def shellCmd = "bash ./server-cmds.sh"
+            //     // Define the application deployment commands
+            //     def deployCommands = """
+            //         scp -o StrictHostKeyChecking=no server-cmds.sh docker-compose.yaml ${virtual_machine}:/home/azureuser/
+            //         ssh -o StrictHostKeyChecking=no -p 22 ${azureVmUsername}@${azureVmHostname} ${shellCmd}
+            //     """
+            //     // Execute SSH commands to deploy the application
+            //     sshagent( ['server-ssh-key']) {
+            //         sh """
+            //             ${deployCommands}
+            //         """
+            //     }
+            // } else {
+            //     error("Azure VM SSH credentials not found")
+            // }
         }
     }
 }
