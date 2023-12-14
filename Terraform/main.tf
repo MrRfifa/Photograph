@@ -136,7 +136,7 @@ output "vm_ip" {
 
 
 resource "azurerm_storage_account" "myapp_storage_account" {
-  name                     = "${var.env_prefix}-storage-myapp"
+  name                     = "storage-myapp"
   resource_group_name      = azurerm_resource_group.myapp-res-grp.name
   location                 = "West Europe"
   account_tier             = "Standard"
