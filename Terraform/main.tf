@@ -135,7 +135,7 @@ output "vm_ip" {
 }
 
 
-resource "azurerm_storage_account" "myapp_storage_account" {
+resource "azurerm_storage_account" "myapp_storage_account_for_test" {
   name                     = "examplesa"
   resource_group_name      = azurerm_resource_group.myapp-res-grp.name
   location                 = "West Europe"
@@ -148,7 +148,7 @@ resource "azurerm_mssql_server" "myapp_sql_server" {
   resource_group_name          = azurerm_resource_group.myapp-res-grp.name
   location                     = "West Europe"
   version                      = "12.0"
-  administrator_login          = "admin"
+  administrator_login          = "adminphotograph"
   administrator_login_password = "4-v3ry-53cr37-p455w0rd"
 }
 
