@@ -3,9 +3,6 @@ pipeline {
   tools {
     dockerTool 'docker'
   }
-  environment {
-        IMAGE = "${DOCKER_USERNAME}/${IMAGE_NAME}"
-    }
 
   stages {
     stage('Checkout') {
@@ -153,7 +150,7 @@ pipeline {
                 def azureVmPort = 22 // Default SSH port
                 def azureVmUsername = 'azureuser'
                 def virtual_machine = "${azureVmUsername}@${azureVmHostname}"
-                def shellCmd = "bash ./server-cmds.sh ${IMAGE}"
+                def shellCmd = "bash ./server-cmds.sh"
                 // Define the application deployment commands
                 def deployCommands = """
                     scp -o StrictHostKeyChecking=no server-cmds.sh docker-compose.yaml ${virtual_machine}:/home/azureuser/
@@ -171,9 +168,6 @@ pipeline {
         }
     }
 }
-
-    
-
 
   }
 }

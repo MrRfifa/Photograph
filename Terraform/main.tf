@@ -127,7 +127,7 @@ resource "azurerm_linux_virtual_machine" "myapp-vm" {
     sku       = "20_04-lts"
     version   = "latest"
   }
-    user_data = filebase64("docker.sh")
+  user_data = filebase64("docker.sh")
 }
 
 output "vm_ip" {
@@ -135,8 +135,8 @@ output "vm_ip" {
 }
 
 
-resource "azurerm_storage_account" "storage_account" {
-  name                     = "${var.env_prefix}_storage_account"
+resource "azurerm_storage_account" "myapp_storage_account" {
+  name                     = "${var.env_prefix}_storage_account_myapp"
   resource_group_name      = azurerm_resource_group.myapp-res-grp.name
   location                 = "West Europe"
   account_tier             = "Standard"
@@ -144,7 +144,7 @@ resource "azurerm_storage_account" "storage_account" {
 }
 
 resource "azurerm_mssql_server" "myapp_sql_server" {
-  name                         = "${var.env_prefix}_sqlserver"
+  name                         = "${var.env_prefix}_sql_server_myapp"
   resource_group_name          = azurerm_resource_group.myapp-res-grp.name
   location                     = "West Europe"
   version                      = "12.0"
