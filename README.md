@@ -8,6 +8,7 @@ Photograph is a social media application developed using React, .NET, SQL, and S
 - [Features](#features)
 - [Technologies Used](#technologies-used)
 - [Usage](#usage)
+- [CICD Pipeline](#cicd-pipeline)
 - [Demo](#demo)
 ## Features
 
@@ -102,6 +103,18 @@ Photograph is a social media application developed using React, .NET, SQL, and S
     ```bash
     dotnet test
     ```
+
+## CICD pipeline
+In our CI/CD pipeline,  leveraged Jenkins as the continuous integration and delivery tool, Docker for containerization, and Docker Hub as container registry. 
+Git serves as version control system, providing a robust foundation for collaborative development. 
+For infrastructure provisioning, relied on Terraform, ensuring efficient and scalable deployment practices. 
+Azure stands as the chosen cloud provider, offering a flexible and scalable environment for hosting our applications. 
+To maintain code quality and perform static analyses, integrated SonarQube into the pipeline, providing valuable insights into code health and security.
+
+![PIPELINE](https://github.com/MrRfifa/Photograph/assets/101003527/e5e7e961-4dd8-4c0e-af2f-a80e466b7444)
+
+![photograph_pipeline](https://github.com/MrRfifa/Photograph/assets/101003527/7146f93f-d90c-4784-a223-9bfb36f9c4a1)
+
 
 ## Demo
 This video shows the home page of the app. [demo](https://github.com/MrRfifa/Photograph/assets/101003527/1ced6853-71ac-4a70-b4b2-ead52d28d2a6)
