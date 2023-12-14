@@ -116,9 +116,9 @@ pipeline {
     }
 
     stage('Provision server') {
-            environment {
-                // TF_VAR_env_prefix = "test"
-                }
+            // environment {
+            //     TF_VAR_env_prefix = "test"
+            //     }
                 steps {
                     script {
                         dir("Terraform") {
