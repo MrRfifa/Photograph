@@ -18,6 +18,18 @@ pipeline {
             }
       }
     }
+    stage('Build') {
+            steps {
+                dir("Frontend"){
+                  script {
+                    // Install dependencies and build the React app
+                    sh 'npm install'
+                    sh 'npm run build'
+                }
+                }
+            }
+        }
+
 
     stage('Analyses SonarQube') {
       parallel {
@@ -39,14 +51,16 @@ pipeline {
 
         stage('SonarQube analysis - Front') {
           steps {
-            dir('client') {
+            dir('Frontend') {
               script {
                 def scannerHome = tool 'sonar'
+                echo ${PROJECT_KEY_IN_SONAR_CLIENT}
+                
                 withSonarQubeEnv('SonarQube') {
                   sh ""
                   "${scannerHome}/bin/sonar-scanner \
                     -Dsonar.projectKey=${PROJECT_KEY_IN_SONAR_CLIENT} \
-                    -Dsonar.sources=./ \
+                    -Dsonar.sources=./src \
                     -Dsonar.host.url=${SONAR_SERVER_URL} \
                     -Dsonar.login=${SONAR_TOKEN_FRONT}"
                   ""
@@ -83,12 +97,14 @@ pipeline {
       steps {
         withCredentials([string(credentialsId: 'docker_credentials', variable: 'DOCKER_PASSWORD')]) {
           
-        sh 'docker login -u $DOCKER_USERNAME -p \${DOCKER_PASSWORD}'
+        sh 'docker login -u $DOCKER_USERNAME -p \$DOCKER_PASSWORD'
         sh 'docker push $DOCKER_USERNAME/backend-photograph:1.0'
         sh 'docker push $DOCKER_USERNAME/frontend-photograph:1.0'
         }
       }
     }
+
+
     stage('Set Azure Subscription') {
       steps {
         withCredentials([string(credentialsId: 'azure_subscription', variable: 'AZURE_SUBSCRIPTION_ID')]) {
